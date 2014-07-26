@@ -46,8 +46,22 @@ In addition, if you need RoboGuice to load an actual Module during the unit test
     @RunWith(InjectedTestRunner.class)
     @RequiredModules(SomeProductionModule.class)
     public class SomeActivityTest {
-        @Mock
-        private InjectableThing injectableThing;
+    }
+    
+    public class SomeProductionModule extends AbstractModule {
+        @Override
+        protected void configure() {
+        }
+        
+        @Provides
+        public InjectableThing injectableThing() {
+            return new InjectableThing();
+        }
+    }
+    
+    public class SomeActivity extends RoboActivity {
+        @Inject
+        private InjectableThing injectableThing; // this will come from the SomeProductionModule during the test run
     }
     
 Installation
