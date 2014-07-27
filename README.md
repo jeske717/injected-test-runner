@@ -69,9 +69,7 @@ Installation
 To use the test runner, simply add the following to your build:
 
     repositories {
-        maven {
-            url 'http://dl.bintray.com/jeske717/android-utils'  // coming soon to jcenter and mavenCentral
-        }
+        jcenter()
     }
     
     dependencies {
