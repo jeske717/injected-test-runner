@@ -13,7 +13,12 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group 'com.jeskeshouse'
-version '1.0'
+version '1.1-SNAPSHOT'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
 
 repositories {
     mavenCentral()
