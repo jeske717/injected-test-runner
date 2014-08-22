@@ -41,6 +41,22 @@ It also supports the use of binding annotations on mocks to satisfy the injectio
         private InjectableThing injectableThing2;
     }
     
+For objects that need to be configured in some way, you can use @Provides in the test case:
+    @RunWith(InjectedTestRunner.class)
+        public class SomeActivityTest {
+            @Provides
+            @Named("someConfiguredThing")
+            public InjectableThing someConfiguredThing() {
+                return new InjectableThing();
+            }
+        }
+        
+        public class SomeActivity extends RoboActivity {
+            @Inject
+            @Named("someConfiguredThing")
+            private InjectableThing injectableThing1;
+        }
+    
 In addition, if you need RoboGuice to load an actual Module during the unit test run, add the @RequiredModules annotation:
 
     @RunWith(InjectedTestRunner.class)
