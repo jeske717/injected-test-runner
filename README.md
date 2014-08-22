@@ -42,6 +42,7 @@ It also supports the use of binding annotations on mocks to satisfy the injectio
     }
     
 For objects that need to be configured in some way, you can use @Provides in the test case  (slated for 1.2):
+
     @RunWith(InjectedTestRunner.class)
         public class SomeActivityTest {
             @Provides
