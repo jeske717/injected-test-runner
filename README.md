@@ -57,7 +57,7 @@ For objects that need to be configured in some way, you can use @Provides in the
             private InjectableThing injectableThing1;
         }
     
-In addition, if you need RoboGuice to load an actual Module during the unit test run, add the @RequiredModules annotation:
+In addition, if you need RoboGuice to load an actual Module during the unit test run, add the @RequiredModules annotation (slated for 1.2):
 
     @RunWith(InjectedTestRunner.class)
     @RequiredModules(SomeProductionModule.class)
