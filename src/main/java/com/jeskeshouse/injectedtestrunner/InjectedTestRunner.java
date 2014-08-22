@@ -3,6 +3,7 @@ package com.jeskeshouse.injectedtestrunner;
 import android.content.Context;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.Provides;
 import com.google.inject.util.Modules;
 import org.junit.runners.model.InitializationError;
 import org.mockito.Mock;
@@ -15,6 +16,7 @@ import roboguice.RoboGuice;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +40,38 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             super.prepareTest(test);
             MockitoAnnotations.initMocks(test);
             try {
-                setupRoboguice(test, getListOfMocks(test));
+                List<TestDependency> mocks = getMocks(test);
+                List<TestDependency> providedObjects = getProvidedObjects(test);
+                mocks.addAll(providedObjects);
+                setupRoboguice(test, mocks);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Failed to get instance of object", e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Failed to get instance of object", e);
             }
+        }
+
+        private List<TestDependency> getProvidedObjects(Object test) throws InvocationTargetException, IllegalAccessException {
+            List<TestDependency> dependencies = new ArrayList<TestDependency>();
+            List<Method> providedMethods = new ArrayList<Method>();
+            for(Method method : test.getClass().getDeclaredMethods()) {
+                if(method.isAnnotationPresent(Provides.class)) {
+                    providedMethods.add(method);
+                }
+            }
+            for (Method providedMethod : providedMethods) {
+                Provides providesAnnotation = providedMethod.getAnnotation(Provides.class);
+                Annotation annotationToBindWith = null;
+                for(Annotation annotation : providedMethod.getDeclaredAnnotations()) {
+                    if(!providesAnnotation.equals(annotation)) {
+
+                        annotationToBindWith = annotation;
+                        break;
+                    }
+                }
+                dependencies.add(new ProvidedTestDependency(providedMethod.invoke(test), annotationToBindWith));
+            }
+            return dependencies;
         }
 
         @Override
@@ -55,9 +85,9 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             super.afterTest(method);
         }
 
-        private List<MockitoDependency> getListOfMocks(Object test) throws IllegalAccessException {
+        private List<TestDependency> getMocks(Object test) throws IllegalAccessException {
             final Field[] declaredFields = test.getClass().getDeclaredFields();
-            List<MockitoDependency> objects = new ArrayList<MockitoDependency>();
+            List<TestDependency> objects = new ArrayList<TestDependency>();
             for (Field field : declaredFields) {
                 Mock mockAnnotation = field.getAnnotation(Mock.class);
                 if (mockAnnotation != null) {
@@ -69,13 +99,13 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                             break;
                         }
                     }
-                    objects.add(new MockitoDependency(field.get(test), annotationToBindWith));
+                    objects.add(new TestDependency(field.get(test), annotationToBindWith));
                 }
             }
             return objects;
         }
 
-        private void setupRoboguice(Object test, List<MockitoDependency> objects) {
+        private void setupRoboguice(Object test, List<TestDependency> objects) {
             List<Module> modules = new ArrayList<Module>();
             modules.add(new TestModule(objects));
             if (test.getClass().isAnnotationPresent(RequiredModules.class)) {
@@ -101,31 +131,27 @@ public class InjectedTestRunner extends RobolectricTestRunner {
 
     private static class TestModule extends AbstractModule {
 
-        private List<MockitoDependency> mocksToInject;
+        private List<TestDependency> mocksToInject;
 
-        public TestModule(List<MockitoDependency> mocksToInject) {
+        public TestModule(List<TestDependency> mocksToInject) {
             this.mocksToInject = mocksToInject;
         }
 
         @Override
         protected void configure() {
             List<Class<?>> boundClasses = new ArrayList<Class<?>>();
-            for (MockitoDependency dependency : mocksToInject) {
-                Object mock = dependency.getMockInstance();
-                Class clazz = mock.getClass();
-                Class superclass = clazz.getSuperclass();
-                if (superclass.equals(Object.class) && clazz.getInterfaces().length > 0) {
-                    superclass = clazz.getInterfaces()[0];
-                }
-                if (boundClasses.contains(superclass)) {
-                    Logger.getLogger(InjectedTestRunner.class.getName()).warning("Unsupported configuration for " + superclass + ":\n" +
+            for (TestDependency dependency : mocksToInject) {
+                Object mock = dependency.getDependency();
+                Class clazz = dependency.getBindableClass();
+                if (boundClasses.contains(clazz)) {
+                    Logger.getLogger(InjectedTestRunner.class.getName()).warning("Unsupported configuration for " + clazz + ":\n" +
                             "\tmultiple implementations are bound.  Use @Named if you need multiple instances of a single type for injection.");
                 } else {
                     if (dependency.shouldBindWithAnnotation()) {
-                        bind(superclass).annotatedWith(dependency.getAnnotation()).toInstance(mock);
+                        bind(clazz).annotatedWith(dependency.getAnnotation()).toInstance(mock);
                     } else {
-                        bind(superclass).toInstance(mock);
-                        boundClasses.add(superclass);
+                        bind(clazz).toInstance(mock);
+                        boundClasses.add(clazz);
                     }
                 }
             }

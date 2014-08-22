@@ -1,7 +1,7 @@
 package com.jeskeshouse.injectedtestrunner;
 
+import com.google.inject.Provides;
 import com.google.inject.name.Named;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -9,9 +9,7 @@ import org.robolectric.util.ActivityController;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 @RunWith(InjectedTestRunner.class)
 @RequiredModules(TestModule.class)
@@ -28,6 +26,14 @@ public class InjectedTestRunnerTest {
     @Inject
     @Named("objectFromModule")
     private InjectableThing objectFromModule;
+
+    @Inject
+    @Named("providedByTest1")
+    private AnotherInjectableThing anotherInjectableThing;
+
+    @Inject
+    @Named("providedByTest2")
+    private AnotherInjectableThing anotherInjectableThingWithName;
 
     @Mock
     private InjectableThing thing;
@@ -64,4 +70,29 @@ public class InjectedTestRunnerTest {
         assertSame(objectTwo, activityWithDependencies.objectTwo);
     }
 
+    @Test
+    public void methodsInTestAnnotatedWithProvidesCanBeInjected() throws Exception {
+        ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
+
+        assertSame(anotherInjectableThing, activityWithDependencies.anotherInjectableThing);
+    }
+
+    @Test
+    public void methodsInTestAnnotatedWithProvidesCanBeInjectedByName() throws Exception {
+        ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
+
+        assertSame(anotherInjectableThingWithName, activityWithDependencies.anotherInjectableThingWithName);
+    }
+
+    @Provides
+    @Named("providedByTest1")
+    public AnotherInjectableThing anotherInjectableThing() {
+        return new AnotherInjectableThing();
+    }
+
+    @Provides
+    @Named("providedByTest2")
+    public AnotherInjectableThing anotherInjectableThingWithAName() {
+        return new AnotherInjectableThing();
+    }
 }
