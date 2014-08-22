@@ -54,17 +54,16 @@ public class InjectedTestRunner extends RobolectricTestRunner {
         private List<TestDependency> getProvidedObjects(Object test) throws InvocationTargetException, IllegalAccessException {
             List<TestDependency> dependencies = new ArrayList<TestDependency>();
             List<Method> providedMethods = new ArrayList<Method>();
-            for(Method method : test.getClass().getDeclaredMethods()) {
-                if(method.isAnnotationPresent(Provides.class)) {
+            for (Method method : test.getClass().getDeclaredMethods()) {
+                if (method.isAnnotationPresent(Provides.class)) {
                     providedMethods.add(method);
                 }
             }
             for (Method providedMethod : providedMethods) {
                 Provides providesAnnotation = providedMethod.getAnnotation(Provides.class);
                 Annotation annotationToBindWith = null;
-                for(Annotation annotation : providedMethod.getDeclaredAnnotations()) {
-                    if(!providesAnnotation.equals(annotation)) {
-
+                for (Annotation annotation : providedMethod.getDeclaredAnnotations()) {
+                    if (!providesAnnotation.equals(annotation)) {
                         annotationToBindWith = annotation;
                         break;
                     }

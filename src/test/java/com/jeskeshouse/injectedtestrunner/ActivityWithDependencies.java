@@ -25,4 +25,7 @@ public class ActivityWithDependencies extends RoboActivity {
     @Inject
     @Named("providedByTest2")
     public AnotherInjectableThing anotherInjectableThingWithName;
+
+    @Inject
+    public GenericThing<String> genericThing;
 }

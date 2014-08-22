@@ -38,6 +38,9 @@ public class InjectedTestRunnerTest {
     @Mock
     private InjectableThing thing;
 
+    @Mock
+    private GenericThing<String> genericThing;
+
     @Test
     public void mocksAreInitialized() throws Exception {
         assertNotNull(objectOne);
@@ -82,6 +85,13 @@ public class InjectedTestRunnerTest {
         ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
 
         assertSame(anotherInjectableThingWithName, activityWithDependencies.anotherInjectableThingWithName);
+    }
+
+    @Test
+    public void typesWithGenericsCanBeInjected() throws Exception {
+        ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
+
+        assertSame(genericThing, activityWithDependencies.genericThing);
     }
 
     @Provides
