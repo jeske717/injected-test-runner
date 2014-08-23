@@ -90,7 +90,7 @@ To use the test runner, simply add the following to your build:
     }
     
     dependencies {
-        <your robolectric configuration> 'com.jeskeshouse:injected-test-runner:1.0'
+        <your robolectric configuration> 'com.jeskeshouse:injected-test-runner:1.2'
     }
     
 Once the dependency resolution is complete, start annotating tests with @RunWith(InjectedTestRunner.class)!
