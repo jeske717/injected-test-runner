@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 group 'com.jeskeshouse'
-version '1.2-SNAPSHOT'
+version '1.2'
 
 compileJava {
     sourceCompatibility = 1.6
