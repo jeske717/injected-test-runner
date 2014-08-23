@@ -5,6 +5,7 @@ import com.google.inject.name.Named;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.robolectric.annotation.Config;
 import org.robolectric.util.ActivityController;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
 
 @RunWith(InjectedTestRunner.class)
 @RequiredModules(TestModule.class)
+@Config(manifest =  Config.NONE)
 public class InjectedTestRunnerTest {
 
     @Mock
