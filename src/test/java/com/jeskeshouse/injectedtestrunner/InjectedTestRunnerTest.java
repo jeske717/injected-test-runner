@@ -35,6 +35,9 @@ public class InjectedTestRunnerTest {
     @Named("providedByTest2")
     private AnotherInjectableThing anotherInjectableThingWithName;
 
+    @Inject
+    private GenericThing<InjectableThing> providedGenericThing;
+
     @Mock
     private InjectableThing thing;
 
@@ -94,6 +97,13 @@ public class InjectedTestRunnerTest {
         assertSame(genericThing, activityWithDependencies.genericThing);
     }
 
+    @Test
+    public void typesWithGenericsCanBeInjectedViaProvidesMethods() throws Exception {
+        ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
+
+        assertSame(providedGenericThing, activityWithDependencies.providedGenericThing);
+    }
+
     @Provides
     @Named("providedByTest1")
     public AnotherInjectableThing anotherInjectableThing() {
@@ -104,5 +114,10 @@ public class InjectedTestRunnerTest {
     @Named("providedByTest2")
     public AnotherInjectableThing anotherInjectableThingWithAName() {
         return new AnotherInjectableThing();
+    }
+
+    @Provides
+    public GenericThing<InjectableThing> genericThing() {
+        return new GenericThing<InjectableThing>();
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.inject.util.Modules;
 import org.junit.runners.model.InitializationError;
 import org.mockito.Mock;
@@ -40,8 +41,8 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             super.prepareTest(test);
             MockitoAnnotations.initMocks(test);
             try {
-                List<TestDependency> mocks = getMocks(test);
-                List<TestDependency> providedObjects = getProvidedObjects(test);
+                List<Dependency> mocks = getMocks(test);
+                List<Dependency> providedObjects = getProvidedObjects(test);
                 mocks.addAll(providedObjects);
                 setupRoboguice(test, mocks);
             } catch (IllegalAccessException e) {
@@ -51,8 +52,19 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             }
         }
 
-        private List<TestDependency> getProvidedObjects(Object test) throws InvocationTargetException, IllegalAccessException {
-            List<TestDependency> dependencies = new ArrayList<TestDependency>();
+        @Override
+        public void afterTest(Method method) {
+            Robolectric.reset();
+            if (Robolectric.application != null) {
+                Robolectric.runBackgroundTasks();
+                Robolectric.runUiThreadTasksIncludingDelayedTasks();
+            }
+            RoboGuice.util.reset();
+            super.afterTest(method);
+        }
+
+        private List<Dependency> getProvidedObjects(Object test) throws InvocationTargetException, IllegalAccessException {
+            List<Dependency> dependencies = new ArrayList<Dependency>();
             List<Method> providedMethods = new ArrayList<Method>();
             for (Method method : test.getClass().getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Provides.class)) {
@@ -68,25 +80,14 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                         break;
                     }
                 }
-                dependencies.add(new ProvidedTestDependency(providedMethod.invoke(test), annotationToBindWith));
+                dependencies.add(new ProvidedMethodDependency(providedMethod.invoke(test), annotationToBindWith, providedMethod));
             }
             return dependencies;
         }
 
-        @Override
-        public void afterTest(Method method) {
-            Robolectric.reset();
-            if (Robolectric.application != null) {
-                Robolectric.runBackgroundTasks();
-                Robolectric.runUiThreadTasksIncludingDelayedTasks();
-            }
-            RoboGuice.util.reset();
-            super.afterTest(method);
-        }
-
-        private List<TestDependency> getMocks(Object test) throws IllegalAccessException {
+        private List<Dependency> getMocks(Object test) throws IllegalAccessException {
             final Field[] declaredFields = test.getClass().getDeclaredFields();
-            List<TestDependency> objects = new ArrayList<TestDependency>();
+            List<Dependency> objects = new ArrayList<Dependency>();
             for (Field field : declaredFields) {
                 Mock mockAnnotation = field.getAnnotation(Mock.class);
                 if (mockAnnotation != null) {
@@ -98,13 +99,13 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                             break;
                         }
                     }
-                    objects.add(new TestDependency(field.get(test), annotationToBindWith));
+                    objects.add(new MockitoFieldDependency(field.get(test), annotationToBindWith, field));
                 }
             }
             return objects;
         }
 
-        private void setupRoboguice(Object test, List<TestDependency> objects) {
+        private void setupRoboguice(Object test, List<Dependency> objects) {
             List<Module> modules = new ArrayList<Module>();
             modules.add(new TestModule(objects));
             if (test.getClass().isAnnotationPresent(RequiredModules.class)) {
@@ -130,27 +131,26 @@ public class InjectedTestRunner extends RobolectricTestRunner {
 
     private static class TestModule extends AbstractModule {
 
-        private List<TestDependency> mocksToInject;
+        private List<Dependency> mocksToInject;
 
-        public TestModule(List<TestDependency> mocksToInject) {
+        public TestModule(List<Dependency> mocksToInject) {
             this.mocksToInject = mocksToInject;
         }
 
         @Override
         protected void configure() {
-            List<Class<?>> boundClasses = new ArrayList<Class<?>>();
-            for (TestDependency dependency : mocksToInject) {
-                Object mock = dependency.getDependency();
-                Class clazz = dependency.getBindableClass();
-                if (boundClasses.contains(clazz)) {
-                    Logger.getLogger(InjectedTestRunner.class.getName()).warning("Unsupported configuration for " + clazz + ":\n" +
+            List<TypeLiteral<?>> boundClasses = new ArrayList<TypeLiteral<?>>();
+            for (Dependency dependency : mocksToInject) {
+                TypeLiteral type = dependency.getTypeToBindTo();
+                if (boundClasses.contains(type)) {
+                    Logger.getLogger(InjectedTestRunner.class.getName()).warning("Unsupported configuration for " + type + ":\n" +
                             "\tmultiple implementations are bound.  Use @Named if you need multiple instances of a single type for injection.");
                 } else {
                     if (dependency.shouldBindWithAnnotation()) {
-                        bind(clazz).annotatedWith(dependency.getAnnotation()).toInstance(mock);
+                        bind(type).annotatedWith(dependency.getBindingAnnotation()).toInstance(dependency.getInstance());
                     } else {
-                        bind(clazz).toInstance(mock);
-                        boundClasses.add(clazz);
+                        bind(type).toInstance(dependency.getInstance());
+                        boundClasses.add(type);
                     }
                 }
             }

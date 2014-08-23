@@ -28,4 +28,7 @@ public class ActivityWithDependencies extends RoboActivity {
 
     @Inject
     public GenericThing<String> genericThing;
+
+    @Inject
+    public GenericThing<InjectableThing> providedGenericThing;
 }
