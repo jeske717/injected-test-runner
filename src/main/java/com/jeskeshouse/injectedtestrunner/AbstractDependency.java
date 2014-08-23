@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class AbstractDependency implements Dependency {
+abstract class AbstractDependency implements Dependency {
 
     protected final Object instance;
     private final Annotation annotation;

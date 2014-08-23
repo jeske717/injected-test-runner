@@ -3,8 +3,9 @@ package com.jeskeshouse.injectedtestrunner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public class ProvidedMethodDependency extends AbstractDependency {
-    public ProvidedMethodDependency(Object instance, Annotation annotation, Method method) {
+class ProvidedMethodDependency extends AbstractDependency {
+
+    public ProvidedMethodDependency(Method method, Object instance, Annotation annotation) {
         super(instance, annotation, method.getGenericReturnType());
     }
 

@@ -3,11 +3,9 @@ package com.jeskeshouse.injectedtestrunner;
 import android.content.Context;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.util.Modules;
 import org.junit.runners.model.InitializationError;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.Robolectric;
@@ -15,11 +13,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.TestLifecycle;
 import roboguice.RoboGuice;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -41,14 +37,13 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             super.prepareTest(test);
             MockitoAnnotations.initMocks(test);
             try {
-                List<Dependency> mocks = getMocks(test);
-                List<Dependency> providedObjects = getProvidedObjects(test);
-                mocks.addAll(providedObjects);
-                setupRoboguice(test, mocks);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Failed to get instance of object", e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Failed to get instance of object", e);
+                List<Dependency> dependencies = new ArrayList<Dependency>();
+                for(DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(), new ProvidesMethodDependencyProvider())) {
+                    dependencies.addAll(provider.getDependencies(test));
+                }
+                setupRoboguice(test, dependencies);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to provide dependencies", e);
             }
         }
 
@@ -61,48 +56,6 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             }
             RoboGuice.util.reset();
             super.afterTest(method);
-        }
-
-        private List<Dependency> getProvidedObjects(Object test) throws InvocationTargetException, IllegalAccessException {
-            List<Dependency> dependencies = new ArrayList<Dependency>();
-            List<Method> providedMethods = new ArrayList<Method>();
-            for (Method method : test.getClass().getDeclaredMethods()) {
-                if (method.isAnnotationPresent(Provides.class)) {
-                    providedMethods.add(method);
-                }
-            }
-            for (Method providedMethod : providedMethods) {
-                Provides providesAnnotation = providedMethod.getAnnotation(Provides.class);
-                Annotation annotationToBindWith = null;
-                for (Annotation annotation : providedMethod.getDeclaredAnnotations()) {
-                    if (!providesAnnotation.equals(annotation)) {
-                        annotationToBindWith = annotation;
-                        break;
-                    }
-                }
-                dependencies.add(new ProvidedMethodDependency(providedMethod.invoke(test), annotationToBindWith, providedMethod));
-            }
-            return dependencies;
-        }
-
-        private List<Dependency> getMocks(Object test) throws IllegalAccessException {
-            final Field[] declaredFields = test.getClass().getDeclaredFields();
-            List<Dependency> objects = new ArrayList<Dependency>();
-            for (Field field : declaredFields) {
-                Mock mockAnnotation = field.getAnnotation(Mock.class);
-                if (mockAnnotation != null) {
-                    field.setAccessible(true);
-                    Annotation annotationToBindWith = null;
-                    for (Annotation annotation : field.getAnnotations()) {
-                        if (!mockAnnotation.equals(annotation)) {
-                            annotationToBindWith = annotation;
-                            break;
-                        }
-                    }
-                    objects.add(new MockitoFieldDependency(field.get(test), annotationToBindWith, field));
-                }
-            }
-            return objects;
         }
 
         private void setupRoboguice(Object test, List<Dependency> objects) {

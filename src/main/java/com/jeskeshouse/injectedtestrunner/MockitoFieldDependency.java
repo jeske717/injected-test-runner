@@ -3,10 +3,10 @@ package com.jeskeshouse.injectedtestrunner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class MockitoFieldDependency extends AbstractDependency {
+class MockitoFieldDependency extends AbstractDependency {
 
 
-    public MockitoFieldDependency(Object instance, Annotation annotation, Field field) {
+    public MockitoFieldDependency(Field field, Object instance, Annotation annotation) {
         super(instance, annotation, field.getGenericType());
     }
 
