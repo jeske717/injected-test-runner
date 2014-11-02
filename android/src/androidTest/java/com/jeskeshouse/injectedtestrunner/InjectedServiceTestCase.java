@@ -2,6 +2,7 @@ package com.jeskeshouse.injectedtestrunner;
 
 import android.content.Intent;
 
+import com.google.inject.Provides;
 import com.jeskeshouse.injectedtestrunner.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;
 
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 
 import javax.inject.Named;
 
+@RequiredModules(TestModule.class)
 public class InjectedServiceTestCase extends InjectedServiceUnitTestCase<TestService> {
 
     @Mock
@@ -17,6 +19,10 @@ public class InjectedServiceTestCase extends InjectedServiceUnitTestCase<TestSer
     @Mock
     @Named("named")
     private AnotherInjectableThing namedThing;
+
+    @Mock
+    @Named("provided")
+    private AnotherInjectableThing providedThing;
 
     public InjectedServiceTestCase() {
         super(TestService.class);
@@ -36,5 +42,27 @@ public class InjectedServiceTestCase extends InjectedServiceUnitTestCase<TestSer
         AnotherInjectableThing injected = getService().namedThing;
 
         assertSame(namedThing, injected);
+    }
+
+    public void testProvidedInjectableThingIsAutomaticallyInjected() throws Exception {
+        startService(new Intent(getSystemContext(), TestService.class));
+
+        AnotherInjectableThing injected = getService().providedThing;
+
+        assertSame(providedThing, injected);
+    }
+
+    public void testThingProvidedByRequiredModuleIsAutomaticallyInjected() throws Exception {
+        startService(new Intent(getSystemContext(), TestService.class));
+
+        AnotherInjectableThing injected = getService().providedByModuleThing;
+
+        assertSame(TestModule.provided, injected);
+    }
+
+    @Provides
+    @Named("provided")
+    public AnotherInjectableThing anotherInjectableThing() {
+        return providedThing;
     }
 }

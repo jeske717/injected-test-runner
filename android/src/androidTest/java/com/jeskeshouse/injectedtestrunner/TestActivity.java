@@ -16,4 +16,12 @@ public class TestActivity extends RoboActivity {
     @Inject
     @Named("named")
     public AnotherInjectableThing namedThing;
+
+    @Inject
+    @Named("provided")
+    public AnotherInjectableThing providedThing;
+
+    @Inject
+    @Named("providedByModule")
+    public AnotherInjectableThing providedByModuleThing;
 }

@@ -20,6 +20,14 @@ public class TestService extends RoboService {
     @Named("named")
     public AnotherInjectableThing namedThing;
 
+    @Inject
+    @Named("provided")
+    public AnotherInjectableThing providedThing;
+
+    @Inject
+    @Named("providedByModule")
+    public AnotherInjectableThing providedByModuleThing;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
