@@ -21,7 +21,7 @@ public class MockitoModule extends AbstractModule {
         for (Dependency dependency : mocksToInject) {
             TypeLiteral type = dependency.getTypeToBindTo();
             if (boundClasses.contains(type)) {
-                Logger.getLogger(InjectedTestRunner.class.getName()).warning("Unsupported configuration for " + type + ":\n" +
+                Logger.getLogger(MockitoModule.class.getName()).warning("Unsupported configuration for " + type + ":\n" +
                         "\tmultiple implementations are bound.  Use @Named if you need multiple instances of a single type for injection.");
             } else {
                 if (dependency.shouldBindWithAnnotation()) {
