@@ -1,4 +1,4 @@
-package test.java.com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner;
 
 public class GenericThing<T> {
 }

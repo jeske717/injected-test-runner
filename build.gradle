@@ -82,7 +82,6 @@ subprojects {
 
         pkg {
             repo = 'android-utils'
-            name = 'injected-test-runner'
         }
     }
 }

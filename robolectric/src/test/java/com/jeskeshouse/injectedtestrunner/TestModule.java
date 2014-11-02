@@ -1,4 +1,4 @@
-package test.java.com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

@@ -1,4 +1,4 @@
-package main.java.com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner;
 
 import org.mockito.Mock;
 

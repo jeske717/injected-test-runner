@@ -1,4 +1,4 @@
-package main.java.com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
