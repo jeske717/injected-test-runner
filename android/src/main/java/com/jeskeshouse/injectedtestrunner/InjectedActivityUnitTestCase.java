@@ -24,6 +24,7 @@ public class InjectedActivityUnitTestCase<T extends Activity> extends ActivityUn
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        System.setProperty("dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getAbsolutePath());
         MockitoAnnotations.initMocks(this);
 
         Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
