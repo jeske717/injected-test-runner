@@ -16,7 +16,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 dependencies {
-    compile 'org.mockito:mockito-all:1.9.0'
+    compile 'org.mockito:mockito-core:1.9.0'
     compile 'com.google.android:android:4.1.1.4'
     compile 'org.roboguice:roboguice:3.0'
 }

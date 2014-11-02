@@ -48,8 +48,8 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
 //                from components.java TODO: figure this out!
-                artifact sourcesJar
-                artifact javadocJar
+//                artifact sourcesJar
+//                artifact javadocJar
 
                 pom.withXml {
                     def root = asNode()
