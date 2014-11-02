@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 group 'com.jeskeshouse'
-version '1.2'
+version '2.0.0-SNAPSHOT'
 
 compileJava {
     sourceCompatibility = 1.6
@@ -29,7 +29,7 @@ dependencies {
     compile 'junit:junit:4.10'
     compile 'org.mockito:mockito-all:1.9.0'
     compile 'com.google.android:android:4.1.1.4'
-    compile 'org.roboguice:roboguice:2.0'
+    compile 'org.roboguice:roboguice:3.0'
     compile('org.robolectric:robolectric:2.3') {
         exclude group: 'com.android.support'
     }

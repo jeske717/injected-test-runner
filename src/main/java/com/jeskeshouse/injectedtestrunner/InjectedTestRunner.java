@@ -54,7 +54,6 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                 Robolectric.runBackgroundTasks();
                 Robolectric.runUiThreadTasksIncludingDelayedTasks();
             }
-            RoboGuice.util.reset();
             super.afterTest(method);
         }
 
@@ -74,8 +73,7 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                     throw new RuntimeException("Unable to instantiate configured modules!", e);
                 }
             }
-            RoboGuice.setBaseApplicationInjector(Robolectric.application, RoboGuice.DEFAULT_STAGE,
-                    Modules.override(RoboGuice.newDefaultRoboModule(Robolectric.application))
+            RoboGuice.overrideApplicationInjector(Robolectric.application, Modules.override(RoboGuice.newDefaultRoboModule(Robolectric.application))
                             .with(modules.toArray(new Module[modules.size()])));
 
             RoboGuice.injectMembers(Robolectric.application, test);
