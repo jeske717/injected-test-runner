@@ -24,4 +24,21 @@ dependencies {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            artifactId "injected-test-runner"
+
+            pom.withXml {
+                def root = asNode()
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
 bintray.pkg.name = "injected-test-runner"

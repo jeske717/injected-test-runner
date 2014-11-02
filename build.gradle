@@ -27,38 +27,6 @@ subprojects {
         jcenter()
     }
 
-    def pomConfig = {
-        licenses {
-            license {
-                name 'The MIT License'
-                url 'http://www.opensource.org/licenses/mit-license.php'
-                distribution 'repo'
-            }
-        }
-        developers {
-            developer {
-                id "jeske717"
-                name "Ben Jeske"
-                email "jeske717@gmail.com"
-            }
-        }
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-//                from components.java TODO: figure this out!
-//                artifact sourcesJar
-//                artifact javadocJar
-
-                pom.withXml {
-                    def root = asNode()
-                    root.children().last() + pomConfig
-                }
-            }
-        }
-    }
-
     bintray {
         user = bintrayUserName
         key = bintrayApiKey
@@ -67,6 +35,23 @@ subprojects {
 
         pkg {
             repo = 'android-utils'
+        }
+    }
+}
+
+ext.pomConfig = {
+    licenses {
+        license {
+            name 'The MIT License'
+            url 'http://www.opensource.org/licenses/mit-license.php'
+            distribution 'repo'
+        }
+    }
+    developers {
+        developer {
+            id "jeske717"
+            name "Ben Jeske"
+            email "jeske717@gmail.com"
         }
     }
 }
