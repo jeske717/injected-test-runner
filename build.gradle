@@ -4,14 +4,18 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
+        classpath 'com.android.tools.build:gradle:0.14.0'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion '2.1'
 }
 
 allprojects {
     group 'com.jeskeshouse'
     version '2.0.0-SNAPSHOT'
 
-    apply plugin: 'java'
     apply plugin: 'maven'
 }
 
@@ -19,27 +23,8 @@ subprojects {
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'maven-publish'
 
-    compileJava {
-        sourceCompatibility = 1.6
-        targetCompatibility = 1.6
-    }
-
     repositories {
         jcenter()
-    }
-
-    task wrapper(type: Wrapper) {
-        gradleVersion '2.1'
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from 'build/docs/javadoc'
     }
 
     def pomConfig = {
@@ -62,7 +47,7 @@ subprojects {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                from components.java
+//                from components.java TODO: figure this out!
                 artifact sourcesJar
                 artifact javadocJar
 
