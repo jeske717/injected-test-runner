@@ -1,6 +1,5 @@
 package com.jeskeshouse.injectedtestrunner;
 
-import android.content.Context;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import org.junit.runners.model.InitializationError;
@@ -55,21 +54,7 @@ public class InjectedTestRunner extends RobolectricTestRunner {
         }
 
         private void setupRoboguice(Object test, List<Dependency> objects) {
-            List<Module> modules = new ArrayList<Module>();
-            modules.add(new MockitoModule(objects));
-            if (test.getClass().isAnnotationPresent(RequiredModules.class)) {
-                try {
-                    for (Class<? extends Module> moduleClass : test.getClass().getAnnotation(RequiredModules.class).value()) {
-                        try {
-                            modules.add(moduleClass.getDeclaredConstructor(Context.class).newInstance(Robolectric.application));
-                        } catch (NoSuchMethodException ignored) {
-                            modules.add(moduleClass.newInstance());
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to instantiate configured modules!", e);
-                }
-            }
+            List<Module> modules = ModuleFactory.instantiateModulesForTest(test, Robolectric.application, objects);
             RoboGuice.overrideApplicationInjector(Robolectric.application, Modules.override(RoboGuice.newDefaultRoboModule(Robolectric.application))
                     .with(modules.toArray(new Module[modules.size()])));
 
