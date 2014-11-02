@@ -1,7 +1,9 @@
-package com.jeskeshouse.injectedtestrunner;
+package test.java.com.jeskeshouse.injectedtestrunner;
 
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
+import main.java.com.jeskeshouse.injectedtestrunner.InjectedTestRunner;
+import main.java.com.jeskeshouse.injectedtestrunner.RequiredModules;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

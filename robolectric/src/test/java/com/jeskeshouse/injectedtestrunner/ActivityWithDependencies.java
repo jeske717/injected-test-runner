@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner;
+package test.java.com.jeskeshouse.injectedtestrunner;
 
 import roboguice.activity.RoboActivity;
 

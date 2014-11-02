@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner;
+package main.java.com.jeskeshouse.injectedtestrunner;
 
 import android.content.Context;
 import com.google.inject.Module;
