@@ -15,9 +15,9 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-public class InjectedServiceUnitTestCase<T extends Service> extends ServiceTestCase<T> {
+public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<T> {
 
-    public InjectedServiceUnitTestCase(Class<T> serviceClass) {
+    public InjectedServiceTestCase(Class<T> serviceClass) {
         super(serviceClass);
     }
 

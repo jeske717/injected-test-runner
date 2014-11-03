@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner.components;
 
 import android.content.Intent;
 import android.os.IBinder;

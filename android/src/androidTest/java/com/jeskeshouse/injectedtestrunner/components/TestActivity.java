@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner;
+package com.jeskeshouse.injectedtestrunner.components;
 
 import com.jeskeshouse.injectedtestrunner.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;

@@ -3,6 +3,7 @@ package com.jeskeshouse.injectedtestrunner;
 import android.content.Intent;
 
 import com.google.inject.Provides;
+import com.jeskeshouse.injectedtestrunner.components.TestActivity;
 import com.jeskeshouse.injectedtestrunner.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;
 
@@ -11,7 +12,7 @@ import org.mockito.Mock;
 import javax.inject.Named;
 
 @RequiredModules(TestModule.class)
-public class InjectedServiceTestCase extends InjectedServiceUnitTestCase<TestService> {
+public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActivity> {
 
     @Mock
     private InjectableThing injectableThing;
@@ -24,38 +25,38 @@ public class InjectedServiceTestCase extends InjectedServiceUnitTestCase<TestSer
     @Named("provided")
     private AnotherInjectableThing providedThing;
 
-    public InjectedServiceTestCase() {
-        super(TestService.class);
+    public InjectedActivityTest() {
+        super(TestActivity.class);
     }
 
     public void testInjectableThingIsAutomaticallyInjected() throws Exception {
-        startService(new Intent(getSystemContext(), TestService.class));
+        startActivity(new Intent(getInstrumentation().getTargetContext(), TestActivity.class), null, null);
 
-        InjectableThing injected = getService().injectableThing;
+        InjectableThing injected = getActivity().injectableThing;
 
         assertSame(injectableThing, injected);
     }
 
     public void testNamedInjectableThingIsAutomaticallyInjected() throws Exception {
-        startService(new Intent(getSystemContext(), TestService.class));
+        startActivity(new Intent(getInstrumentation().getTargetContext(), TestActivity.class), null, null);
 
-        AnotherInjectableThing injected = getService().namedThing;
+        AnotherInjectableThing injected = getActivity().namedThing;
 
         assertSame(namedThing, injected);
     }
 
     public void testProvidedInjectableThingIsAutomaticallyInjected() throws Exception {
-        startService(new Intent(getSystemContext(), TestService.class));
+        startActivity(new Intent(getInstrumentation().getTargetContext(), TestActivity.class), null, null);
 
-        AnotherInjectableThing injected = getService().providedThing;
+        AnotherInjectableThing injected = getActivity().providedThing;
 
         assertSame(providedThing, injected);
     }
 
     public void testThingProvidedByRequiredModuleIsAutomaticallyInjected() throws Exception {
-        startService(new Intent(getSystemContext(), TestService.class));
+        startActivity(new Intent(getInstrumentation().getTargetContext(), TestActivity.class), null, null);
 
-        AnotherInjectableThing injected = getService().providedByModuleThing;
+        AnotherInjectableThing injected = getActivity().providedByModuleThing;
 
         assertSame(TestModule.provided, injected);
     }
