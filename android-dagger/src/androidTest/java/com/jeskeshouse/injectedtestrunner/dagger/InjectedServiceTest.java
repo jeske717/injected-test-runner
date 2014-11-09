@@ -8,10 +8,12 @@ import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import org.mockito.Mock;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Named;
 
 import dagger.Module;
-import dagger.ObjectGraph;
 import dagger.Provides;
 
 public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
@@ -33,7 +35,6 @@ public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     public void testInjectableThingIsAutomaticallyInjected() throws Exception {
         startService(new Intent(getSystemContext(), TestService.class));
-        ObjectGraph.create(new MockitoModule(injectableThing, namedThing, providedThing)).inject(getService());
 
         InjectableThing injected = getService().injectableThing;
 
@@ -42,11 +43,15 @@ public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     public void testNamedInjectableThingIsAutomaticallyInjected() throws Exception {
         startService(new Intent(getSystemContext(), TestService.class));
-        ObjectGraph.create(new MockitoModule(injectableThing, namedThing, providedThing)).inject(getService());
 
         AnotherInjectableThing injected = getService().namedThing;
 
         assertSame(namedThing, injected);
+    }
+
+    @Override
+    protected List<?> getCustomModules() {
+        return Arrays.asList(new MockitoModule(injectableThing, namedThing, providedThing));
     }
 
     @Module(injects = TestService.class, overrides = true)
