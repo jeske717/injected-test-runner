@@ -69,3 +69,6 @@ publishing {
 }
 
 bintray.pkg.name = "injected-test-android"
+check.dependsOn { connectedCheck }
+assemble.dependsOn { sourcesJar }
+assemble.dependsOn { javadocJar }
