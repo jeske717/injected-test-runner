@@ -1,0 +1,79 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        minSdkVersion 15
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    configurations {
+        all*.exclude group: 'org.roboguice'
+    }
+}
+
+task androidJavadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: androidJavadoc) {
+    classifier = 'javadoc'
+    from androidJavadoc.destinationDir
+}
+
+dependencies {
+    compile project(":core")
+    compile "com.squareup.dagger:dagger:1.2.2"
+
+    provided "com.squareup.dagger:dagger-compiler:1.2.2"
+
+    compile 'org.mockito:mockito-core:1.9.5'
+    compile "com.google.dexmaker:dexmaker:1.1"
+    compile "com.google.dexmaker:dexmaker-mockito:1.1"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact file("$buildDir/outputs/aar/android-debug.aar")
+            artifact sourcesJar
+            artifact javadocJar
+
+            artifactId "injected-test-android-dagger"
+
+            pom.withXml {
+                def root = asNode()
+                def dependencies = root.appendNode("dependencies")
+                configurations.compile.allDependencies.each {
+                    if (it['group'] != null && it['group'] != 'com.jeskeshouse') {
+                        def dependency = dependencies.appendNode("dependency")
+                        dependency?.appendNode("groupId", it["group"])
+                        dependency?.appendNode("artifactId", it["name"])
+                        dependency?.appendNode("version", it["version"])
+                    }
+                }
+
+                def dependency = dependencies.appendNode("dependency")
+                dependency?.appendNode("groupId", "com.jeskeshouse")
+                dependency?.appendNode("artifactId", "injected-test-core")
+                dependency?.appendNode("version", project.version)
+
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray.pkg.name = "injected-test-android-dagger"
+check.dependsOn { connectedCheck }
