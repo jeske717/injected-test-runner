@@ -21,8 +21,6 @@ task wrapper(type: Wrapper) {
 
 allprojects {
     group 'com.jeskeshouse'
-    version '2.0.1-SNAPSHOT'
-
     apply plugin: 'maven'
 }
 
