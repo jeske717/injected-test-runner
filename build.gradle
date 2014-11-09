@@ -12,8 +12,7 @@ buildscript {
 
 if (!project.parent) {
     apply plugin: 'release'
-    apply plugin: 'com.jfrog.bintray'
-    createReleaseTag.dependsOn { bintrayUpload }
+    createReleaseTag.dependsOn { subprojects.collect{ it.tasks['bintrayUpload']} }
 }
 
 task wrapper(type: Wrapper) {
@@ -29,6 +28,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
 
     repositories {
         jcenter()
