@@ -10,6 +10,10 @@ import org.mockito.Mock;
 
 import javax.inject.Named;
 
+import dagger.Module;
+import dagger.ObjectGraph;
+import dagger.Provides;
+
 public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     @Mock
@@ -29,6 +33,7 @@ public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     public void testInjectableThingIsAutomaticallyInjected() throws Exception {
         startService(new Intent(getSystemContext(), TestService.class));
+        ObjectGraph.create(new MockitoModule(injectableThing, namedThing, providedThing)).inject(getService());
 
         InjectableThing injected = getService().injectableThing;
 
@@ -37,9 +42,41 @@ public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     public void testNamedInjectableThingIsAutomaticallyInjected() throws Exception {
         startService(new Intent(getSystemContext(), TestService.class));
+        ObjectGraph.create(new MockitoModule(injectableThing, namedThing, providedThing)).inject(getService());
 
         AnotherInjectableThing injected = getService().namedThing;
 
         assertSame(namedThing, injected);
+    }
+
+    @Module(injects = TestService.class, overrides = true)
+    public static class MockitoModule {
+
+        private final InjectableThing injectableThing;
+        private final AnotherInjectableThing namedThing;
+        private final AnotherInjectableThing providedThing;
+
+        public MockitoModule(InjectableThing injectableThing, AnotherInjectableThing namedThing, AnotherInjectableThing providedThing) {
+            this.injectableThing = injectableThing;
+            this.namedThing = namedThing;
+            this.providedThing = providedThing;
+        }
+
+        @Provides
+        public InjectableThing injectableThing() {
+            return injectableThing;
+        }
+
+        @Provides
+        @Named("named")
+        public AnotherInjectableThing namedThing() {
+            return namedThing;
+        }
+
+        @Provides
+        @Named("provided")
+        public AnotherInjectableThing providedThing() {
+            return providedThing;
+        }
     }
 }

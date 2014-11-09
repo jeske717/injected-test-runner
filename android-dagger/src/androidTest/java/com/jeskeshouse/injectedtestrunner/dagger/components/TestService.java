@@ -10,7 +10,9 @@ import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import dagger.Module;
 import dagger.ObjectGraph;
+import dagger.Provides;
 
 public class TestService extends Service {
 
@@ -25,10 +27,6 @@ public class TestService extends Service {
     @Named("provided")
     public AnotherInjectableThing providedThing;
 
-    @Inject
-    @Named("providedByModule")
-    public AnotherInjectableThing providedByModuleThing;
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -37,6 +35,28 @@ public class TestService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ObjectGraph.create().inject(this);
+        ObjectGraph.create(new TestServiceModule()).inject(this);
+    }
+
+    @Module(injects = TestService.class)
+    public static class TestServiceModule {
+
+        @Provides
+        public InjectableThing injectableThing() {
+            return new InjectableThing();
+        }
+
+        @Provides
+        @Named("named")
+        public AnotherInjectableThing namedThing() {
+            return new AnotherInjectableThing();
+        }
+
+        @Provides
+        @Named("provided")
+        public AnotherInjectableThing providedThing() {
+            return new AnotherInjectableThing();
+        }
+
     }
 }
