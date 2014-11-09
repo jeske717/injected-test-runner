@@ -16,6 +16,7 @@ import roboguice.RoboGuice;
 class GuiceInitializer {
 
     static void initialize(Object test, InitializationStrategy strategy) throws Exception{
+        RoboGuice.setUseAnnotationDatabases(false);
         System.setProperty("dexmaker.dexcache", strategy.getUsableContext().getCacheDir().getAbsolutePath());
         MockitoAnnotations.initMocks(test);
 
