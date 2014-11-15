@@ -9,6 +9,7 @@ import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;
 
 import org.mockito.Mock;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 @RequiredModules(TestModule.class)
@@ -24,6 +25,10 @@ public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActiv
     @Mock
     @Named("provided")
     private AnotherInjectableThing providedThing;
+
+    @Inject
+    @Named("providedByModule")
+    private AnotherInjectableThing providedByModuleThing;
 
     public InjectedActivityTest() {
         super(TestActivity.class);
@@ -58,7 +63,7 @@ public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActiv
 
         AnotherInjectableThing injected = getActivity().providedByModuleThing;
 
-        assertSame(TestModule.provided, injected);
+        assertSame(providedByModuleThing, injected);
     }
 
     public void testRoboGuiceInjectsExtras() throws Exception {
