@@ -8,13 +8,7 @@ import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.inject.Named;
-
-import dagger.Module;
-import dagger.Provides;
 
 @MockModule
 public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
@@ -48,41 +42,5 @@ public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
         AnotherInjectableThing injected = getService().namedThing;
 
         assertSame(namedThing, injected);
-    }
-
-    @Override
-    protected List<?> getCustomModules() {
-        return Arrays.asList(new MockitoModule(injectableThing, namedThing, providedThing));
-    }
-
-    @Module(injects = TestService.class, overrides = true)
-    public static class MockitoModule {
-
-        private final InjectableThing injectableThing;
-        private final AnotherInjectableThing namedThing;
-        private final AnotherInjectableThing providedThing;
-
-        public MockitoModule(InjectableThing injectableThing, AnotherInjectableThing namedThing, AnotherInjectableThing providedThing) {
-            this.injectableThing = injectableThing;
-            this.namedThing = namedThing;
-            this.providedThing = providedThing;
-        }
-
-        @Provides
-        public InjectableThing injectableThing() {
-            return injectableThing;
-        }
-
-        @Provides
-        @Named("named")
-        public AnotherInjectableThing namedThing() {
-            return namedThing;
-        }
-
-        @Provides
-        @Named("provided")
-        public AnotherInjectableThing providedThing() {
-            return providedThing;
-        }
     }
 }
