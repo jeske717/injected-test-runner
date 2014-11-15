@@ -1,8 +1,7 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
+import android.app.Activity;
+import android.os.Bundle;
 
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
@@ -12,7 +11,7 @@ import javax.inject.Named;
 
 import dagger.ObjectGraph;
 
-public class ServiceThatDoesWork extends Service {
+public class ActivityThatDoesWork extends Activity {
 
     @Inject
     public InjectableThing injectableThing;
@@ -26,13 +25,8 @@ public class ServiceThatDoesWork extends Service {
     public AnotherInjectableThing providedThing;
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         ObjectGraph.create(new ProductionModule()).inject(this);
     }
 }
