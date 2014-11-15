@@ -13,6 +13,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
@@ -45,7 +46,8 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
 
                 for (Element element : type.getEnclosedElements()) {
                     if (element.getAnnotation(Mock.class) != null) {
-                        module.addMock(new MockField(element.getSimpleName().toString(), element.getAnnotationMirrors()));
+                        TypeMirror fieldType = element.asType();
+                        module.addMock(new MockField(fieldType.toString(), element.getSimpleName().toString(), element.getAnnotationMirrors()));
                     }
                 }
 
