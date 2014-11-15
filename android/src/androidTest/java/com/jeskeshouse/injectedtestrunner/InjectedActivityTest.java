@@ -61,6 +61,16 @@ public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActiv
         assertSame(TestModule.provided, injected);
     }
 
+    public void testRoboGuiceInjectsExtras() throws Exception {
+        Intent intent = new Intent(getInstrumentation().getTargetContext(), TestActivity.class);
+        intent.putExtra(TestActivity.EXTRA_NAME, "inject this!");
+        startActivity(intent, null, null);
+
+        String injected = getActivity().injectedExtra;
+
+        assertEquals("inject this!", injected);
+    }
+
     @Provides
     @Named("provided")
     public AnotherInjectableThing anotherInjectableThing() {

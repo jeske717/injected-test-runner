@@ -10,6 +10,11 @@ import roboguice.activity.RoboActivity;
 
 public class TestActivity extends RoboActivity {
 
+    public static final String EXTRA_NAME = "Extra";
+
+    //    @InjectExtra(value = EXTRA_NAME, optional = true)
+    public String injectedExtra;
+
     @Inject
     public InjectableThing injectableThing;
 
