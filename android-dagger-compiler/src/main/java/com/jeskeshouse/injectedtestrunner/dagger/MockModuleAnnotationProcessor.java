@@ -2,25 +2,34 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 
 import org.mockito.Mock;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Writer;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 @SupportedAnnotationTypes("com.jeskeshouse.injectedtestrunner.dagger.MockModule")
 public class MockModuleAnnotationProcessor extends AbstractProcessor {
+
+    private Configuration config;
+
+    public MockModuleAnnotationProcessor() {
+        config = new Configuration(Configuration.VERSION_2_3_21);
+        config.setClassForTemplateLoading(MockModuleAnnotationProcessor.class, "/templates/");
+    }
+
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
@@ -50,82 +59,18 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, module.toString());
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(module.getClassName());
-            BufferedWriter writer = new BufferedWriter(sourceFile.openWriter());
 
-            writer.append("package ").append(module.getPackageName()).append(";");
-            writer.newLine();
-            writer.newLine();
+            Writer writer = sourceFile.openWriter();
 
-            writer.append("public class ").append(module.getClassName()).append("{}");
-            writer.newLine();
-            writer.newLine();
+            Template template = config.getTemplate("ModuleTemplate.ftl");
+            template.process(module, writer);
 
             writer.flush();
             writer.close();
         } catch (IOException e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Unable to generate source file for " + module.getClassName());
-        }
-    }
-
-    private static class PendingModule {
-        private final String className;
-        private final String packageName;
-        private final List<MockField> mocks = new ArrayList<MockField>();
-
-        private PendingModule(String className, String packageName) {
-            this.className = className;
-            this.packageName = packageName;
-        }
-
-        public String getClassName() {
-            return className;
-        }
-
-        public List<MockField> getMocks() {
-            return mocks;
-        }
-
-        public String getPackageName() {
-            return packageName;
-        }
-
-        public void addMock(MockField mock) {
-            mocks.add(mock);
-        }
-
-        @Override
-        public String toString() {
-            return "PendingModule{" +
-                    "className='" + className + '\'' +
-                    ", packageName='" + packageName + '\'' +
-                    ", mocks=" + mocks +
-                    '}';
-        }
-    }
-
-    private static class MockField {
-        private final String name;
-        private final List<AnnotationMirror> annotations = new ArrayList<AnnotationMirror>();
-
-        private MockField(String name, List<? extends AnnotationMirror> annotations) {
-            this.name = name;
-            this.annotations.addAll(annotations);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public List<AnnotationMirror> getAnnotations() {
-            return annotations;
-        }
-
-        @Override
-        public String toString() {
-            return "MockField{" +
-                    "name='" + name + '\'' +
-                    ", annotations=" + annotations +
-                    '}';
+        } catch (TemplateException e) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Unable to generate source file for " + module.getClassName());
         }
     }
 }
