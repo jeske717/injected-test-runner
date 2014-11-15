@@ -50,17 +50,16 @@ public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<
             Constructor<?> constructor = moduleClass.getDeclaredConstructor(calculateMockModuleConstructor());
             return constructor.newInstance(buildConstructorArgs());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new AssertionError(e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            throw new AssertionError(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AssertionError(e);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            throw new AssertionError(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new AssertionError(e);
         }
-        return null;
     }
 
     private Object[] buildConstructorArgs() throws IllegalAccessException {
@@ -71,6 +70,7 @@ public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<
                 result.add(field.get(this));
             }
         }
+        result.add(new Object());
         return result.toArray(new Object[result.size()]);
     }
 
@@ -79,7 +79,7 @@ public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<
         for (Field field : getClass().getDeclaredFields()) {
             field.setAccessible(true);
             if (field.getAnnotation(Mock.class) != null) {
-                result.add(field.getDeclaringClass());
+                result.add(field.getType());
             }
         }
         result.add(Object.class);

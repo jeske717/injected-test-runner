@@ -42,7 +42,7 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
             if (rootElement.getAnnotation(MockModule.class) != null) {
                 TypeElement type = (TypeElement) rootElement;
                 PackageElement packageElement = (PackageElement) type.getEnclosingElement();
-                PendingModule module = new PendingModule(type.getSimpleName() + "MockModule", packageElement.getQualifiedName().toString());
+                PendingModule module = new PendingModule(type.getSimpleName() + "MockModule", packageElement.getQualifiedName().toString(), type.getQualifiedName().toString());
 
                 for (Element element : type.getEnclosedElements()) {
                     if (element.getAnnotation(Mock.class) != null) {
@@ -58,7 +58,6 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
     }
 
     private void writeModuleSource(PendingModule module) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, module.toString());
         try {
             JavaFileObject sourceFile = processingEnv.getFiler().createSourceFile(module.getClassName());
 

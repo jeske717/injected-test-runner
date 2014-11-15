@@ -33,7 +33,6 @@ task javadocJar(type: Jar, dependsOn: androidJavadoc) {
 }
 
 dependencies {
-    compile project(":core")
     compile project(":android-dagger-core")
 
     provided "com.squareup.dagger:dagger-compiler:1.2.2"

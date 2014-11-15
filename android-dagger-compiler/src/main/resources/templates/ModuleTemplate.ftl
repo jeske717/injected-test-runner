@@ -1,6 +1,6 @@
 package ${packageName};
 
-@dagger.Module(overrides = true, library = true)
+@dagger.Module(overrides = true, library = true, injects = ${testSubject}.class)
 public class ${className} {
 
     <#list mocks as mock>

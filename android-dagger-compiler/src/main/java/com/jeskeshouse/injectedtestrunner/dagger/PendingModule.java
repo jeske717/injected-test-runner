@@ -6,11 +6,13 @@ import java.util.List;
 public class PendingModule {
     private final String className;
     private final String packageName;
+    private final String testClassName;
     private final List<MockField> mocks = new ArrayList<MockField>();
 
-    public PendingModule(String className, String packageName) {
+    public PendingModule(String className, String packageName, String testClassName) {
         this.className = className;
         this.packageName = packageName;
+        this.testClassName = testClassName;
     }
 
     public String getClassName() {
@@ -27,6 +29,10 @@ public class PendingModule {
 
     public void addMock(MockField mock) {
         mocks.add(mock);
+    }
+
+    public String getTestSubject() {
+        return testClassName.replace("Test", "");
     }
 
     @Override

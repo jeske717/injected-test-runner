@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner.dagger.components;
+package com.jeskeshouse.injectedtestrunner.dagger;
 
 import android.app.Service;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
 
-public class TestService extends Service {
+public class ServiceThatDoesWork extends Service {
 
     @Inject
     public InjectableThing injectableThing;
@@ -38,7 +38,7 @@ public class TestService extends Service {
         ObjectGraph.create(new TestServiceModule()).inject(this);
     }
 
-    @Module(injects = TestService.class)
+    @Module(injects = ServiceThatDoesWork.class)
     public static class TestServiceModule {
 
         @Provides
