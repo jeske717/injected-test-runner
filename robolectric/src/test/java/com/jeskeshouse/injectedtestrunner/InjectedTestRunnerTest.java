@@ -1,20 +1,27 @@
 package com.jeskeshouse.injectedtestrunner;
 
+import android.content.Intent;
+
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ActivityController;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 @RunWith(InjectedTestRunner.class)
 @RequiredModules(TestModule.class)
-@Config(manifest =  Config.NONE)
+@Config(manifest = Config.NONE)
 public class InjectedTestRunnerTest {
 
     @Mock
@@ -104,6 +111,15 @@ public class InjectedTestRunnerTest {
         ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).create().get();
 
         assertSame(providedGenericThing, activityWithDependencies.providedGenericThing);
+    }
+
+    @Test
+    public void extrasAreInjectedByRoboGuice() throws Exception {
+        Intent intent = new Intent(Robolectric.application, ActivityWithDependencies.class);
+        intent.putExtra(ActivityWithDependencies.EXTRA_NAME, "inject this!");
+        ActivityWithDependencies activityWithDependencies = ActivityController.of(ActivityWithDependencies.class).withIntent(intent).create().get();
+
+        assertEquals("inject this!", activityWithDependencies.injectedExtra);
     }
 
     @Provides

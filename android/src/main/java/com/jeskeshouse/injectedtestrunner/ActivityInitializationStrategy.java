@@ -18,6 +18,6 @@ class ActivityInitializationStrategy implements InitializationStrategy {
 
     @Override
     public Application getApplication() {
-        return (Application) testCase.getInstrumentation().getTargetContext().getApplicationContext();
+        return (Application) getUsableContext().getApplicationContext();
     }
 }

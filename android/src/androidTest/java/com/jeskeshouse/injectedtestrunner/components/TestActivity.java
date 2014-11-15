@@ -7,8 +7,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectExtra;
 
 public class TestActivity extends RoboActivity {
+
+    public static final String EXTRA_NAME = "Extra";
+
+    @InjectExtra(value = EXTRA_NAME, optional = true)
+    public String injectedExtra;
 
     @Inject
     public InjectableThing injectableThing;

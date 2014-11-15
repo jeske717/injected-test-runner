@@ -2,6 +2,7 @@ package com.jeskeshouse.injectedtestrunner;
 
 import android.app.Application;
 
+import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 
@@ -28,8 +29,9 @@ class GuiceInitializer {
         }
 
         List<Module> modules = ModuleFactory.instantiateModulesForTest(test, strategy.getUsableContext(), dependencies);
-        RoboGuice.overrideApplicationInjector(application,
+        Injector injector = RoboGuice.overrideApplicationInjector(application,
                 Modules.override(RoboGuice.newDefaultRoboModule(application)).with(modules.toArray(new Module[modules.size()])));
+        injector.injectMembers(test);
     }
 
 }

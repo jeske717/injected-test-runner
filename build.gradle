@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-        classpath 'com.android.tools.build:gradle:0.14.1'
+        classpath 'com.android.tools.build:gradle:0.14.2'
         classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.3'
     }
 }
