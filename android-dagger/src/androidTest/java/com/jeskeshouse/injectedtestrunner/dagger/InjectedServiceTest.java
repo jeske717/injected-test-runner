@@ -16,6 +16,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+@MockModule
 public class InjectedServiceTest extends InjectedServiceTestCase<TestService> {
 
     @Mock
