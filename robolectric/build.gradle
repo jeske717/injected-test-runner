@@ -1,19 +1,5 @@
 apply plugin: 'java'
-
-compileJava {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
+apply from: file("../shared-buildscripts/shared-java-build.gradle")
 
 dependencies {
     compile project(":core")
@@ -21,23 +7,6 @@ dependencies {
     compile 'junit:junit:4.10'
     compile('org.robolectric:robolectric:2.3') {
         exclude group: 'com.android.support'
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-
-            artifactId "injected-test-runner"
-
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
-            }
-        }
     }
 }
 
