@@ -12,7 +12,7 @@ import java.util.List;
 
 import dagger.ObjectGraph;
 
-class DaggerTestInitializer {
+public class DaggerTestInitializer {
 
     public static void injectTestSubject(Object test, Object testSubject, List<?> modules) {
         List<Object> customModules = new ArrayList<Object>(modules);
