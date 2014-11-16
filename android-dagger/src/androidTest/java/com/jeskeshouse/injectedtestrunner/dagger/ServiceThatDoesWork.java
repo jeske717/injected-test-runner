@@ -4,13 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import com.jeskeshouse.daggermodules.Modules;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import dagger.ObjectGraph;
 
 public class ServiceThatDoesWork extends Service {
 
@@ -33,6 +32,7 @@ public class ServiceThatDoesWork extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ObjectGraph.create(new ProductionModule()).inject(this);
+        Modules.install(new ProductionModule());
+        Modules.asObjectGraph().inject(this);
     }
 }

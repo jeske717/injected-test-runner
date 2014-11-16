@@ -5,13 +5,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.jeskeshouse.daggermodules.Modules;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import dagger.ObjectGraph;
 
 public class ProviderThatDoesWork extends ContentProvider {
 
@@ -28,7 +27,8 @@ public class ProviderThatDoesWork extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        ObjectGraph.create(new ProductionModule()).inject(this);
+        Modules.install(new ProductionModule());
+        Modules.asObjectGraph().inject(this);
         return true;
     }
 

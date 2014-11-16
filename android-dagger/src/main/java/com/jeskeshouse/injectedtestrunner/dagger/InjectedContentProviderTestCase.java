@@ -24,11 +24,17 @@ public class InjectedContentProviderTestCase<T extends ContentProvider> extends 
     public void setUp() throws Exception {
         super.setUp();
         AndroidMockitoInitializer.setupMockito(this, getContext());
+        DaggerTestInitializer.addModulesToObjectGraph(this, getCustomModules());
         resolver = new MockContentResolver();
         provider = providerClass.newInstance();
         provider.attachInfo(getContext().getApplicationContext(), null);
         resolver.addProvider(providerAuthority, getProvider());
-        DaggerTestInitializer.injectTestSubject(this, provider, getCustomModules());
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        DaggerTestInitializer.resetModules();
+        super.tearDown();
     }
 
     protected List<?> getCustomModules() {

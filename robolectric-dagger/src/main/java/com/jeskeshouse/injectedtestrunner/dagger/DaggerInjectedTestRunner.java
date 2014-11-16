@@ -20,16 +20,13 @@ public class DaggerInjectedTestRunner extends RobolectricTestRunner {
         return TestLifecycleWithMockito.class;
     }
 
-    public static void injectMocks(Object test, Object target) {
-        DaggerTestInitializer.injectTestSubject(test, target, Collections.emptyList());
-    }
-
     public static class TestLifecycleWithMockito extends DefaultTestLifecycle {
 
         @Override
         public void prepareTest(Object test) {
             super.prepareTest(test);
             MockitoAnnotations.initMocks(test);
+            DaggerTestInitializer.addModulesToObjectGraph(test, Collections.emptyList());
         }
 
         @Override
@@ -39,6 +36,7 @@ public class DaggerInjectedTestRunner extends RobolectricTestRunner {
                 Robolectric.runBackgroundTasks();
                 Robolectric.runUiThreadTasksIncludingDelayedTasks();
             }
+            DaggerTestInitializer.resetModules();
             super.afterTest(method);
         }
     }

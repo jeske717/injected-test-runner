@@ -1,7 +1,6 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
 import android.app.Service;
-import android.content.Intent;
 import android.test.ServiceTestCase;
 
 import java.util.Collections;
@@ -17,12 +16,13 @@ public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<
     public void setUp() throws Exception {
         super.setUp();
         AndroidMockitoInitializer.setupMockito(this, getSystemContext());
+        DaggerTestInitializer.addModulesToObjectGraph(this, getCustomModules());
     }
 
     @Override
-    protected void startService(Intent intent) {
-        super.startService(intent);
-        DaggerTestInitializer.injectTestSubject(this, getService(), getCustomModules());
+    public void tearDown() throws Exception {
+        DaggerTestInitializer.resetModules();
+        super.tearDown();
     }
 
     protected List<?> getCustomModules() {

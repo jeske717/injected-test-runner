@@ -1,5 +1,7 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
+import com.jeskeshouse.daggermodules.Modules;
+
 import org.mockito.Mock;
 
 import java.lang.reflect.Constructor;
@@ -10,16 +12,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 public class DaggerTestInitializer {
 
-    public static void injectTestSubject(Object test, Object testSubject, List<?> modules) {
+    public static void addModulesToObjectGraph(Object test, List<?> modules) {
         List<Object> customModules = new ArrayList<Object>(modules);
         if (test.getClass().getAnnotation(MockModule.class) != null) {
             customModules.add(instantiateMockModule(test));
         }
-        ObjectGraph.create(customModules.toArray(new Object[customModules.size()])).inject(testSubject);
+        Modules.save();
+        for (Object customModule : customModules) {
+            Modules.install(customModule);
+        }
+    }
+
+    public static void resetModules() {
+        Modules.restore();
     }
 
     private static Object instantiateMockModule(Object test) {

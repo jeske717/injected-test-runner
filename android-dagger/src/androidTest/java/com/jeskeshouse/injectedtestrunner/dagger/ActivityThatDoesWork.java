@@ -3,14 +3,13 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.jeskeshouse.daggermodules.Modules;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.GenericThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import dagger.ObjectGraph;
 
 public class ActivityThatDoesWork extends Activity {
 
@@ -31,6 +30,7 @@ public class ActivityThatDoesWork extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ObjectGraph.create(new ProductionModule()).inject(this);
+        Modules.install(new ProductionModule());
+        Modules.asObjectGraph().inject(this);
     }
 }

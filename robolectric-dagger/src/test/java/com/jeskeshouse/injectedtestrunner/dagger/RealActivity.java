@@ -3,9 +3,9 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 import android.app.Activity;
 import android.os.Bundle;
 
-import javax.inject.Inject;
+import com.jeskeshouse.daggermodules.Modules;
 
-import dagger.ObjectGraph;
+import javax.inject.Inject;
 
 public class RealActivity extends Activity {
 
@@ -15,6 +15,7 @@ public class RealActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ObjectGraph.create(new ProductionModule()).inject(this);
+        Modules.install(new ProductionModule());
+        Modules.asObjectGraph().inject(this);
     }
 }

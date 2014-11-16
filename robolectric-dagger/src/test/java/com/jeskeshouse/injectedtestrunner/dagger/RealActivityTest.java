@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ActivityController;
 
-import static com.jeskeshouse.injectedtestrunner.dagger.DaggerInjectedTestRunner.injectMocks;
 import static org.junit.Assert.assertSame;
 
 @RunWith(DaggerInjectedTestRunner.class)
@@ -18,9 +17,8 @@ public class RealActivityTest {
     private InjectableThing injectableThing;
 
     @Test
-    public void mocksCanBeInjected() throws Exception {
+    public void mocksAreAutomaticallyInjected() throws Exception {
         RealActivity activity = ActivityController.of(RealActivity.class).create().get();
-        injectMocks(this, activity);
 
         InjectableThing injected = activity.injectableThing;
 

@@ -1,8 +1,6 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 import android.test.ActivityUnitTestCase;
 
 import java.util.Collections;
@@ -17,13 +15,13 @@ public class InjectedActivityUnitTestCase<T extends Activity> extends ActivityUn
     public void setUp() throws Exception {
         super.setUp();
         AndroidMockitoInitializer.setupMockito(this, getInstrumentation().getTargetContext());
+        DaggerTestInitializer.addModulesToObjectGraph(this, getCustomModules());
     }
 
     @Override
-    protected T startActivity(Intent intent, Bundle savedInstanceState, Object lastNonConfigurationInstance) {
-        T result = super.startActivity(intent, savedInstanceState, lastNonConfigurationInstance);
-        DaggerTestInitializer.injectTestSubject(this, result, getCustomModules());
-        return result;
+    public void tearDown() throws Exception {
+        DaggerTestInitializer.resetModules();
+        super.tearDown();
     }
 
     protected List<?> getCustomModules() {
