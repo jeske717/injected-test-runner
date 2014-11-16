@@ -4,13 +4,18 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -42,7 +47,7 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
             if (rootElement.getAnnotation(MockModule.class) != null) {
                 TypeElement type = (TypeElement) rootElement;
                 PackageElement packageElement = (PackageElement) type.getEnclosingElement();
-                PendingModule module = new PendingModule(type.getSimpleName() + "MockModule", packageElement.getQualifiedName().toString(), type.getQualifiedName().toString());
+                PendingModule module = new PendingModule(type.getSimpleName() + "MockModule", packageElement.getQualifiedName().toString(), type.getQualifiedName().toString(), getInjectsElement(type));
 
                 for (Element element : type.getEnclosedElements()) {
                     if (element.getAnnotation(Mock.class) != null) {
@@ -55,6 +60,36 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
             }
         }
         return true;
+    }
+
+    private List<String> getInjectsElement(TypeElement type) {
+        AnnotationMirror am = getAnnotationMirror(type, MockModule.class);
+        if (am == null) {
+            return null;
+        }
+        AnnotationValue av = getAnnotationValue(am, "injects");
+        if (av == null) {
+            return null;
+        }
+        return (List<String>) av.getValue();
+    }
+
+    private AnnotationMirror getAnnotationMirror(TypeElement type, Class<?> annotationClass) {
+        for (AnnotationMirror annotationMirror : type.getAnnotationMirrors()) {
+            if (annotationMirror.getAnnotationType().toString().equals(annotationClass.getName())) {
+                return annotationMirror;
+            }
+        }
+        return null;
+    }
+
+    private AnnotationValue getAnnotationValue(AnnotationMirror annotationMirror, String key) {
+        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet()) {
+            if (entry.getKey().getSimpleName().toString().equals(key)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     private void writeModuleSource(PendingModule module) {

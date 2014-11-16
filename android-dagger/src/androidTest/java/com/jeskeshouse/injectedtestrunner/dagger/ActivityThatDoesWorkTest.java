@@ -10,7 +10,7 @@ import org.mockito.Mock;
 
 import javax.inject.Named;
 
-@MockModule
+@MockModule(injects = ActivityThatDoesWork.class)
 public class ActivityThatDoesWorkTest extends InjectedActivityUnitTestCase<ActivityThatDoesWork> {
 
     @Mock

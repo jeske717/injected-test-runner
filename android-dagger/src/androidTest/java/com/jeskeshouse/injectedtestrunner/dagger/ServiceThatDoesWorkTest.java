@@ -9,7 +9,7 @@ import org.mockito.Mock;
 
 import javax.inject.Named;
 
-@MockModule
+@MockModule(injects = ServiceThatDoesWork.class)
 public class ServiceThatDoesWorkTest extends InjectedServiceTestCase<ServiceThatDoesWork> {
 
     @Mock

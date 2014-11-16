@@ -7,7 +7,7 @@ import org.mockito.Mock;
 
 import javax.inject.Named;
 
-@MockModule
+@MockModule(injects = ProviderThatDoesWork.class)
 public class ProviderThatDoesWorkTest extends InjectedContentProviderTestCase<ProviderThatDoesWork> {
 
     public ProviderThatDoesWorkTest() {

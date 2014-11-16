@@ -1,5 +1,7 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
+import com.google.common.base.Joiner;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,12 +11,14 @@ public class PendingModule {
     private final String className;
     private final String packageName;
     private final String testClassName;
+    private final List<String> injectTargets;
     private final List<MockField> mocks = new ArrayList<MockField>();
 
-    public PendingModule(String className, String packageName, String testClassName) {
+    public PendingModule(String className, String packageName, String testClassName, List<String> injectTargets) {
         this.className = className;
         this.packageName = packageName;
         this.testClassName = testClassName;
+        this.injectTargets = injectTargets;
     }
 
     public String getClassName() {
@@ -35,7 +39,7 @@ public class PendingModule {
     }
 
     public String getTestSubject() {
-        return testClassName.replace("Test", "");
+        return Joiner.on(",").join(injectTargets);
     }
 
     @Override

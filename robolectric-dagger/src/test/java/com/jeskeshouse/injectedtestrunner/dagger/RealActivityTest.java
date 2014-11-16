@@ -10,7 +10,7 @@ import static org.junit.Assert.assertSame;
 
 @RunWith(DaggerInjectedTestRunner.class)
 @Config(manifest = Config.NONE)
-@MockModule
+@MockModule(injects = RealActivity.class)
 public class RealActivityTest {
 
     @Mock
