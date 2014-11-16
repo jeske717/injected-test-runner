@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":android-dagger-core")
+    compile project(":dagger-core")
     compile 'org.mockito:mockito-core:1.9.5'
     compile 'org.freemarker:freemarker:2.3.21'
 }

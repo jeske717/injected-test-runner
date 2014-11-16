@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'provided-base'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+dependencies {
+    compile project(":dagger-core")
+
+    provided "com.squareup.dagger:dagger-compiler:1.2.2"
+    provided project(":dagger-module-compiler")
+
+    compile 'junit:junit:4.10'
+    compile('org.robolectric:robolectric:2.3') {
+        exclude group: 'com.android.support'
+    }
+    compile 'com.google.android:android:4.1.1.4'
+}
