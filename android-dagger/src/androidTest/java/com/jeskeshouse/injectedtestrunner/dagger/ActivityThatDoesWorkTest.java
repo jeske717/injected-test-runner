@@ -3,6 +3,7 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 import android.content.Intent;
 
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
+import com.jeskeshouse.injectedtestrunner.dagger.injectables.GenericThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import org.mockito.Mock;
@@ -23,6 +24,9 @@ public class ActivityThatDoesWorkTest extends InjectedActivityUnitTestCase<Activ
     @Named("provided")
     private AnotherInjectableThing providedThing;
 
+    @Mock
+    private GenericThing<String> genericThing;
+
     public ActivityThatDoesWorkTest() {
         super(ActivityThatDoesWork.class);
     }
@@ -41,5 +45,13 @@ public class ActivityThatDoesWorkTest extends InjectedActivityUnitTestCase<Activ
         AnotherInjectableThing injected = getActivity().namedThing;
 
         assertSame(namedThing, injected);
+    }
+
+    public void testGenericTypesAreAutomaticallyInjected() throws Exception {
+        startActivity(new Intent(getInstrumentation().getTargetContext(), ActivityThatDoesWork.class), null, null);
+
+        GenericThing<String> injected = getActivity().genericThing;
+
+        assertSame(genericThing, injected);
     }
 }

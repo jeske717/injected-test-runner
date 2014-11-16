@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
+import com.jeskeshouse.injectedtestrunner.dagger.injectables.GenericThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import javax.inject.Inject;
@@ -15,6 +16,9 @@ public class ActivityThatDoesWork extends Activity {
 
     @Inject
     public InjectableThing injectableThing;
+
+    @Inject
+    public GenericThing<String> genericThing;
 
     @Inject
     @Named("named")

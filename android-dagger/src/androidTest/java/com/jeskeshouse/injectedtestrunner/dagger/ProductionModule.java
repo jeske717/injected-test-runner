@@ -1,6 +1,7 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
+import com.jeskeshouse.injectedtestrunner.dagger.injectables.GenericThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
 import javax.inject.Named;
@@ -26,5 +27,10 @@ public class ProductionModule {
     @Named("provided")
     public AnotherInjectableThing providedThing() {
         return new AnotherInjectableThing();
+    }
+
+    @Provides
+    public GenericThing<String> genericThing() {
+        return new GenericThing<String>();
     }
 }

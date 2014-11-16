@@ -1,6 +1,8 @@
 package com.jeskeshouse.injectedtestrunner.dagger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PendingModule {
@@ -20,6 +22,7 @@ public class PendingModule {
     }
 
     public List<MockField> getMocks() {
+        Collections.sort(mocks, new SimpleMockFieldComparator());
         return mocks;
     }
 
@@ -42,5 +45,13 @@ public class PendingModule {
                 ", packageName='" + packageName + '\'' +
                 ", mocks=" + mocks +
                 '}';
+    }
+
+    private static class SimpleMockFieldComparator implements Comparator<MockField> {
+
+        @Override
+        public int compare(MockField o1, MockField o2) {
+            return o1.getQualifiedName().compareTo(o2.getQualifiedName());
+        }
     }
 }
