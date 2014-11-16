@@ -1,1 +1,1 @@
-include ':core', ':android', ':robolectric', ':android-dagger', ':android-dagger-compiler', ':android-dagger-core'
+include ':core', ':android', ':robolectric', ':android-dagger', ':dagger-module-compiler', ':android-dagger-core'
