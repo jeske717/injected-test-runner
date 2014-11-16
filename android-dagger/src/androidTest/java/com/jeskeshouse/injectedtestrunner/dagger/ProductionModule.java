@@ -8,7 +8,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(injects = {ServiceThatDoesWork.class, ActivityThatDoesWork.class})
+@Module(injects = {ServiceThatDoesWork.class, ActivityThatDoesWork.class, ProviderThatDoesWork.class})
 public class ProductionModule {
 
     @Provides
