@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.google.inject.Provides;
 import com.jeskeshouse.injectedtestrunner.components.TestActivity;
+import com.jeskeshouse.injectedtestrunner.injectables.AnInterface;
 import com.jeskeshouse.injectedtestrunner.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;
 
@@ -17,6 +18,9 @@ public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActiv
 
     @Mock
     private InjectableThing injectableThing;
+
+    @Mock
+    private AnInterface anInterface;
 
     @Mock
     @Named("named")
@@ -74,6 +78,14 @@ public class InjectedActivityTest extends InjectedActivityUnitTestCase<TestActiv
         String injected = getActivity().injectedExtra;
 
         assertEquals("inject this!", injected);
+    }
+
+    public void testInterfacesAreMockedAndInjected() throws Exception {
+        startActivity(new Intent(getInstrumentation().getTargetContext(), TestActivity.class), null, null);
+
+        AnInterface injected = getActivity().anInterface;
+
+        assertSame(anInterface, injected);
     }
 
     @Provides
