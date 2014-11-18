@@ -24,7 +24,7 @@ class GuiceInitializer {
         Application application = strategy.getApplication();
 
         List<Dependency> dependencies = new ArrayList<Dependency>();
-        for(DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(), new ProvidesMethodDependencyProvider())) {
+        for (DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(new DexmakerClassExtractor()), new ProvidesMethodDependencyProvider())) {
             dependencies.addAll(provider.getDependencies(test));
         }
 

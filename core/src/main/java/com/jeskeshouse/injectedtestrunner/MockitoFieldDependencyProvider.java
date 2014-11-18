@@ -8,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 class MockitoFieldDependencyProvider implements DependencyProvider {
+
+    private final ClassExtractor classExtractor;
+
+    public MockitoFieldDependencyProvider(ClassExtractor classExtractor) {
+        this.classExtractor = classExtractor;
+    }
+
     @Override
     public List<Dependency> getDependencies(Object test) throws Exception {
         final Field[] declaredFields = test.getClass().getDeclaredFields();
@@ -17,7 +24,7 @@ class MockitoFieldDependencyProvider implements DependencyProvider {
             if (mockAnnotation != null) {
                 field.setAccessible(true);
                 Annotation annotationToBindWith = AnnotationLocator.findFirstAnnotationNotOfType(field, Mock.class);
-                objects.add(new MockitoFieldDependency(field, field.get(test), annotationToBindWith));
+                objects.add(new MockitoFieldDependency(field, field.get(test), annotationToBindWith, classExtractor));
             }
         }
         return objects;

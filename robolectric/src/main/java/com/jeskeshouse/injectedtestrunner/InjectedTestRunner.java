@@ -2,18 +2,20 @@ package com.jeskeshouse.injectedtestrunner;
 
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
+
 import org.junit.runners.model.InitializationError;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.TestLifecycle;
-import roboguice.RoboGuice;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import roboguice.RoboGuice;
 
 public class InjectedTestRunner extends RobolectricTestRunner {
 
@@ -34,7 +36,7 @@ public class InjectedTestRunner extends RobolectricTestRunner {
             MockitoAnnotations.initMocks(test);
             try {
                 List<Dependency> dependencies = new ArrayList<Dependency>();
-                for(DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(), new ProvidesMethodDependencyProvider())) {
+                for (DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(new CglibClassExtractor()), new ProvidesMethodDependencyProvider())) {
                     dependencies.addAll(provider.getDependencies(test));
                 }
                 setupRoboguice(test, dependencies);

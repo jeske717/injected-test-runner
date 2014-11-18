@@ -1,5 +1,6 @@
 package com.jeskeshouse.injectedtestrunner.components;
 
+import com.jeskeshouse.injectedtestrunner.injectables.AnInterface;
 import com.jeskeshouse.injectedtestrunner.injectables.AnotherInjectableThing;
 import com.jeskeshouse.injectedtestrunner.injectables.InjectableThing;
 
@@ -30,4 +31,7 @@ public class TestActivity extends RoboActivity {
     @Inject
     @Named("providedByModule")
     public AnotherInjectableThing providedByModuleThing;
+
+    @Inject
+    public AnInterface anInterface;
 }

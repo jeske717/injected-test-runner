@@ -5,19 +5,15 @@ import java.lang.reflect.Field;
 
 class MockitoFieldDependency extends AbstractDependency {
 
+    private final ClassExtractor classExtractor;
 
-    public MockitoFieldDependency(Field field, Object instance, Annotation annotation) {
+    public MockitoFieldDependency(Field field, Object instance, Annotation annotation, ClassExtractor classExtractor) {
         super(instance, annotation, field.getGenericType());
+        this.classExtractor = classExtractor;
     }
 
     @Override
     protected Class<?> getUserClass() {
-        Class<?> clazz = instance.getClass();
-        Class<?> superclass = clazz.getSuperclass();
-        if (superclass.equals(Object.class) && clazz.getInterfaces().length > 0) {
-            superclass = clazz.getInterfaces()[0];
-        }
-
-        return superclass;
+        return classExtractor.extract(instance);
     }
 }
