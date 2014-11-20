@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class DaggerTestInitializer {
 
@@ -49,16 +51,22 @@ public class DaggerTestInitializer {
     }
 
     private static Object[] buildConstructorArgs(Object test) throws IllegalAccessException {
-        List<Object> result = new ArrayList<Object>();
+        Map<Class<?>, List<Object>> result = new TreeMap<Class<?>, List<Object>>(new SimpleClassComparator());
         for (Field field : test.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             if (field.getAnnotation(Mock.class) != null) {
-                result.add(field.get(test));
+                if (result.get(field.getType()) == null) {
+                    result.put(field.getType(), new ArrayList<Object>());
+                }
+                result.get(field.getType()).add(field.get(test));
             }
         }
-        Collections.sort(result, new SimpleObjectClassComparator());
-        result.add(new Object());
-        return result.toArray(new Object[result.size()]);
+        List<Object> combined = new ArrayList<Object>();
+        for (List<Object> objects : result.values()) {
+            combined.addAll(objects);
+        }
+        combined.add(new Object());
+        return combined.toArray(new Object[result.size()]);
     }
 
     private static Class<?>[] calculateMockModuleConstructor(Object test) {
@@ -79,14 +87,6 @@ public class DaggerTestInitializer {
         @Override
         public int compare(Class<?> o1, Class<?> o2) {
             return o1.getName().compareTo(o2.getName());
-        }
-    }
-
-    private static class SimpleObjectClassComparator implements Comparator<Object> {
-
-        @Override
-        public int compare(Object o1, Object o2) {
-            return o1.getClass().getName().compareTo(o2.getClass().getName());
         }
     }
 }

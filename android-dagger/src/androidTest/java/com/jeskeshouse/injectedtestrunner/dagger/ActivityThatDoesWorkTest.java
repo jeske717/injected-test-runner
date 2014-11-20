@@ -3,6 +3,8 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 import android.content.Intent;
 
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.AnotherInjectableThing;
+import com.jeskeshouse.injectedtestrunner.dagger.injectables.BasicServiceConnection;
+import com.jeskeshouse.injectedtestrunner.dagger.injectables.EmployeeService;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.GenericThing;
 import com.jeskeshouse.injectedtestrunner.dagger.injectables.InjectableThing;
 
@@ -26,6 +28,12 @@ public class ActivityThatDoesWorkTest extends InjectedActivityUnitTestCase<Activ
 
     @Mock
     private GenericThing<String> genericThing;
+
+    @Mock
+    private EmployeeService employeeService;
+
+    @Mock
+    private BasicServiceConnection basicServiceConnection;
 
     public ActivityThatDoesWorkTest() {
         super(ActivityThatDoesWork.class);
@@ -53,5 +61,15 @@ public class ActivityThatDoesWorkTest extends InjectedActivityUnitTestCase<Activ
         GenericThing<String> injected = getActivity().genericThing;
 
         assertSame(genericThing, injected);
+    }
+
+    public void testTheMockModuleIsInstantiatedWithTheCorrectArgumentsWhenClassNamesAreOutOfOrder() throws Exception {
+        startActivity(new Intent(getInstrumentation().getTargetContext(), ActivityThatDoesWork.class), null, null);
+
+        EmployeeService injected = getActivity().employeeService;
+        BasicServiceConnection injected2 = getActivity().basicServiceConnection;
+
+        assertSame(employeeService, injected);
+        assertSame(basicServiceConnection, injected2);
     }
 }
