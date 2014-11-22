@@ -14,24 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DaggerTestInitializer {
+class DaggerTestInitializer {
 
-    public static void addModulesToObjectGraph(Object test, List<?> modules) {
-        List<Object> customModules = new ArrayList<Object>(modules);
-        if (test.getClass().getAnnotation(MockModule.class) != null) {
-            customModules.add(instantiateMockModule(test));
-        }
+    static void addMockModuleToObjectGraph(Object test) {
         Modules.save();
-        for (Object customModule : customModules) {
-            Modules.install(customModule);
+        if (test.getClass().getAnnotation(MockModule.class) != null) {
+            Modules.install(instantiateMockModule(test));
         }
     }
 
-    public static void resetModules() {
+    static void resetModules() {
         Modules.restore();
     }
 
-    private static Object instantiateMockModule(Object test) {
+    static Object instantiateMockModule(Object test) {
         Class<?> moduleClass = null;
         try {
             moduleClass = Class.forName(test.getClass().getName() + "MockModule");

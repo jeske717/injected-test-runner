@@ -4,9 +4,6 @@ import android.content.ContentProvider;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContentResolver;
 
-import java.util.Collections;
-import java.util.List;
-
 public class InjectedContentProviderTestCase<T extends ContentProvider> extends AndroidTestCase {
 
     private final Class<T> providerClass;
@@ -24,7 +21,7 @@ public class InjectedContentProviderTestCase<T extends ContentProvider> extends 
     public void setUp() throws Exception {
         super.setUp();
         AndroidMockitoInitializer.setupMockito(this, getContext());
-        DaggerTestInitializer.addModulesToObjectGraph(this, getCustomModules());
+        DaggerTestInitializer.addMockModuleToObjectGraph(this);
         resolver = new MockContentResolver();
         provider = providerClass.newInstance();
         provider.attachInfo(getContext().getApplicationContext(), null);
@@ -35,10 +32,6 @@ public class InjectedContentProviderTestCase<T extends ContentProvider> extends 
     public void tearDown() throws Exception {
         DaggerTestInitializer.resetModules();
         super.tearDown();
-    }
-
-    protected List<?> getCustomModules() {
-        return Collections.emptyList();
     }
 
     public T getProvider() {

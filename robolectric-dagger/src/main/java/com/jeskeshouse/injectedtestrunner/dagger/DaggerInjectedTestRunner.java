@@ -8,7 +8,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.TestLifecycle;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 
 public class DaggerInjectedTestRunner extends RobolectricTestRunner {
     public DaggerInjectedTestRunner(Class<?> testClass) throws InitializationError {
@@ -26,7 +25,7 @@ public class DaggerInjectedTestRunner extends RobolectricTestRunner {
         public void prepareTest(Object test) {
             super.prepareTest(test);
             MockitoAnnotations.initMocks(test);
-            DaggerTestInitializer.addModulesToObjectGraph(test, Collections.emptyList());
+            DaggerTestInitializer.addMockModuleToObjectGraph(test);
         }
 
         @Override
