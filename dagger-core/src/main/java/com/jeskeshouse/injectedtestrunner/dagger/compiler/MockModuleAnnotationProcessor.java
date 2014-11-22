@@ -1,4 +1,6 @@
-package com.jeskeshouse.injectedtestrunner.dagger;
+package com.jeskeshouse.injectedtestrunner.dagger.compiler;
+
+import com.jeskeshouse.injectedtestrunner.dagger.MockModule;
 
 import org.mockito.Mock;
 

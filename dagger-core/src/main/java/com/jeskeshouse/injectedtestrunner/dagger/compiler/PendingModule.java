@@ -1,4 +1,4 @@
-package com.jeskeshouse.injectedtestrunner.dagger;
+package com.jeskeshouse.injectedtestrunner.dagger.compiler;
 
 import com.google.common.base.Joiner;
 

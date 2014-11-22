@@ -15,6 +15,10 @@ android {
     configurations {
         all*.exclude group: 'org.roboguice'
     }
+
+    packagingOptions {
+        exclude "META-INF/services/javax.annotation.processing.Processor"
+    }
 }
 
 dependencies {
@@ -25,7 +29,6 @@ dependencies {
     compile 'org.mockito:mockito-core:1.9.5'
     compile "com.google.dexmaker:dexmaker:1.1"
     compile "com.google.dexmaker:dexmaker-mockito:1.1"
-    androidTestProvided project(":dagger-module-compiler")
 }
 
 bintray.pkg.name = "injected-test-android-dagger"
