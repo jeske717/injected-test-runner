@@ -64,7 +64,7 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
         return true;
     }
 
-    private List<String> getInjectsElement(TypeElement type) {
+    private List<Object> getInjectsElement(TypeElement type) {
         AnnotationMirror am = getAnnotationMirror(type, MockModule.class);
         if (am == null) {
             return null;
@@ -73,7 +73,7 @@ public class MockModuleAnnotationProcessor extends AbstractProcessor {
         if (av == null) {
             return null;
         }
-        return (List<String>) av.getValue();
+        return (List<Object>) av.getValue();
     }
 
     private AnnotationMirror getAnnotationMirror(TypeElement type, Class<?> annotationClass) {
