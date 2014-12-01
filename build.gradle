@@ -29,8 +29,10 @@ subprojects {
     }
 
     bintray {
-        user = bintrayUserName
-        key = bintrayApiKey
+	if(hasProperty("bintrayUserName")) {
+        	user = bintrayUserName
+        	key = bintrayApiKey
+	}
         publish = true
         publications = ['mavenJava']
 
