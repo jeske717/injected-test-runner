@@ -30,7 +30,7 @@ public class DaggerInjectedTestRunner extends RobolectricTestRunner {
 
         @Override
         public void afterTest(Method method) {
-            Robolectric.reset();
+            Robolectric.reset(null);
             if (Robolectric.application != null) {
                 Robolectric.runBackgroundTasks();
                 Robolectric.runUiThreadTasksIncludingDelayedTasks();

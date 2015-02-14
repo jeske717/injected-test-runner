@@ -8,7 +8,7 @@ dependencies {
     provided "com.squareup.dagger:dagger-compiler:1.2.2"
 
     compile 'junit:junit:4.10'
-    compile('org.robolectric:robolectric:2.3') {
+    compile('org.robolectric:robolectric:2.4') {
         exclude group: 'com.android.support'
     }
     compile 'com.google.android:android:4.1.1.4'
