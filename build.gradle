@@ -13,7 +13,7 @@ allprojects {
     apply plugin: 'maven'
 
     group 'com.jeskeshouse'
-    version "3.0.0-SNAPSHOT"
+    version "3.0.0"
 }
 
 subprojects {
@@ -25,10 +25,10 @@ subprojects {
     }
 
     bintray {
-	if(hasProperty("bintrayUserName")) {
-        	user = bintrayUserName
-        	key = bintrayApiKey
-	}
+        if (project.hasProperty("bintrayUserName")) {
+            user = bintrayUserName
+            key = bintrayApiKey
+        }
         publish = true
         publications = ['mavenJava']
 
