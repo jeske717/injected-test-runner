@@ -7,14 +7,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import javax.inject.Provider;
+
 abstract class AbstractDependency implements Dependency {
 
-    protected final Object instance;
+    protected final Provider<Object> provider;
     private final Annotation annotation;
     private final Type genericType;
 
-    public AbstractDependency(Object instance, Annotation annotation, Type genericType) {
-        this.instance = instance;
+    public AbstractDependency(Provider<Object> provider, Annotation annotation, Type genericType) {
+        this.provider = provider;
         this.annotation = annotation;
         this.genericType = genericType;
     }
@@ -30,8 +32,8 @@ abstract class AbstractDependency implements Dependency {
     }
 
     @Override
-    public Object getInstance() {
-        return instance;
+    public Provider<Object> getInstanceProvider() {
+        return provider;
     }
 
     @Override

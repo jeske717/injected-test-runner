@@ -25,9 +25,9 @@ public class MockitoModule extends AbstractModule {
                         "\tmultiple implementations are bound.  Use @Named if you need multiple instances of a single type for injection.");
             } else {
                 if (dependency.shouldBindWithAnnotation()) {
-                    bind(type).annotatedWith(dependency.getBindingAnnotation()).toInstance(dependency.getInstance());
+                    bind(type).annotatedWith(dependency.getBindingAnnotation()).toProvider(dependency.getInstanceProvider());
                 } else {
-                    bind(type).toInstance(dependency.getInstance());
+                    bind(type).toProvider(dependency.getInstanceProvider());
                     boundClasses.add(type);
                 }
             }
