@@ -4,8 +4,6 @@ import android.content.ContentProvider;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContentResolver;
 
-import roboguice.RoboGuice;
-
 public class InjectedContentProviderTestCase<T extends ContentProvider> extends AndroidTestCase {
 
     private final Class<T> providerClass;
@@ -27,12 +25,6 @@ public class InjectedContentProviderTestCase<T extends ContentProvider> extends 
         provider = providerClass.newInstance();
         provider.attachInfo(getContext().getApplicationContext(), null);
         resolver.addProvider(providerAuthority, getProvider());
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        RoboGuice.Util.reset();
-        super.tearDown();
     }
 
     public T getProvider() {

@@ -9,10 +9,6 @@ import android.test.ActivityUnitTestCase;
 import android.test.mock.MockApplication;
 import android.util.Log;
 
-import org.mockito.MockitoAnnotations;
-
-import roboguice.RoboGuice;
-
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -29,15 +25,7 @@ public class InjectedActivityUnitTestCase<T extends Activity> extends ActivityUn
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        if(InitializedTestInstance.get() != null && InitializedTestInstance.get().getClass().equals(getClass())) {
-            InitializedTestInstance.set(this);
-            MockitoAnnotations.initMocks(this);
-            RoboGuice.getInjector(new ActivityInitializationStrategy(this).getApplication()).injectMembers(this);
-        } else {
-            RoboGuice.Util.reset();
-            InitializedTestInstance.set(this);
-            GuiceInitializer.initialize(this, new ActivityInitializationStrategy(this));
-        }
+        GuiceInitializer.initialize(this, new ActivityInitializationStrategy(this));
     }
 
     @Override
