@@ -122,20 +122,24 @@ public class InjectedTestRunnerTest {
         assertEquals("inject this!", activityWithDependencies.injectedExtra);
     }
 
+    private AnotherInjectableThing anotherInjectableThingForProvides = new AnotherInjectableThing();
+    private AnotherInjectableThing anotherInjectableThingWithAName = new AnotherInjectableThing();
+    private GenericThing<InjectableThing> genericThingForProvides = new GenericThing<InjectableThing>();
+
     @Provides
     @Named("providedByTest1")
     public AnotherInjectableThing anotherInjectableThing() {
-        return new AnotherInjectableThing();
+        return anotherInjectableThingForProvides;
     }
 
     @Provides
     @Named("providedByTest2")
     public AnotherInjectableThing anotherInjectableThingWithAName() {
-        return new AnotherInjectableThing();
+        return anotherInjectableThingWithAName;
     }
 
     @Provides
     public GenericThing<InjectableThing> genericThing() {
-        return new GenericThing<InjectableThing>();
+        return genericThingForProvides;
     }
 }

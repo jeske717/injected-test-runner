@@ -33,15 +33,22 @@ public class InjectedTestRunner extends RobolectricTestRunner {
         @Override
         public void prepareTest(Object test) {
             super.prepareTest(test);
+            Object previousTestInstance = InitializedTestInstance.get();
+            InitializedTestInstance.set(test);
             MockitoAnnotations.initMocks(test);
-            try {
-                List<Dependency> dependencies = new ArrayList<Dependency>();
-                for (DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(new CglibClassExtractor()), new ProvidesMethodDependencyProvider())) {
-                    dependencies.addAll(provider.getDependencies(test));
+            if(previousTestInstance == null || previousTestInstance.getClass().equals(test.getClass())) {
+                RoboGuice.Util.reset();
+                try {
+                    List<Dependency> dependencies = new ArrayList<Dependency>();
+                    for (DependencyProvider provider : Arrays.asList(new MockitoFieldDependencyProvider(new CglibClassExtractor()), new ProvidesMethodDependencyProvider())) {
+                        dependencies.addAll(provider.getDependencies(test));
+                    }
+                    setupRoboguice(test, dependencies);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to provide dependencies", e);
                 }
-                setupRoboguice(test, dependencies);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to provide dependencies", e);
+            } else {
+                RoboGuice.injectMembers(Robolectric.application, test);
             }
         }
 
