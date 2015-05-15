@@ -4,7 +4,7 @@ import android.content.ContentProvider;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContentResolver;
 
-public class InjectedContentProviderTestCase<T extends ContentProvider> extends AndroidTestCase {
+public abstract class InjectedContentProviderTestCase<T extends ContentProvider> extends AndroidTestCase {
 
     private final Class<T> providerClass;
     private final String providerAuthority;

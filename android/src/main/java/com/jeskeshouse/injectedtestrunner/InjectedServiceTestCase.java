@@ -3,7 +3,7 @@ package com.jeskeshouse.injectedtestrunner;
 import android.app.Service;
 import android.test.ServiceTestCase;
 
-public class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<T> {
+public abstract class InjectedServiceTestCase<T extends Service> extends ServiceTestCase<T> {
 
     public InjectedServiceTestCase(Class<T> serviceClass) {
         super(serviceClass);

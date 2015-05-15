@@ -14,7 +14,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class InjectedActivityUnitTestCase<T extends Activity> extends ActivityUnitTestCase<T> {
+public abstract class InjectedActivityUnitTestCase<T extends Activity> extends ActivityUnitTestCase<T> {
 
     private static final String TAG = InjectedActivityUnitTestCase.class.getName();
 
