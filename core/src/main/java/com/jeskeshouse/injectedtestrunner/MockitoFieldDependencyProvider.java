@@ -5,6 +5,7 @@ import org.mockito.Mock;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Provider;
@@ -19,7 +20,7 @@ class MockitoFieldDependencyProvider implements DependencyProvider {
 
     @Override
     public List<Dependency> getDependencies(Object test) throws Exception {
-        final Field[] declaredFields = test.getClass().getDeclaredFields();
+        final List<Field> declaredFields = getDeclaredFields(test);
         List<Dependency> objects = new ArrayList<Dependency>();
         for (Field field : declaredFields) {
             Mock mockAnnotation = field.getAnnotation(Mock.class);
@@ -30,6 +31,24 @@ class MockitoFieldDependencyProvider implements DependencyProvider {
             }
         }
         return objects;
+    }
+
+    private List<Field> getDeclaredFields(Object test) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class daClass : getAllClasses(test)) {
+            fields.addAll(Arrays.asList(daClass.getDeclaredFields()));
+        }
+        return fields;
+    }
+
+    private List<Class> getAllClasses(Object test) {
+        List<Class> classes = new ArrayList<Class>();
+        Class currentClass = test.getClass();
+        while(!currentClass.getSuperclass().equals(Object.class)) {
+            classes.add(currentClass);
+            currentClass = currentClass.getSuperclass();
+        }
+        return classes;
     }
 
     private static class FieldReadingProvider implements Provider<Object> {

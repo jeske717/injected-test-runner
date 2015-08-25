@@ -22,16 +22,16 @@ class ProvidesMethodDependencyProvider implements DependencyProvider {
         }
         for (Method providedMethod : providedMethods) {
             Annotation annotationToBindWith = AnnotationLocator.findFirstAnnotationNotOfType(providedMethod, Provides.class);
-            dependencies.add(new ProvidedMethodDependency(providedMethod, new ProvidesMethodInovker(providedMethod), annotationToBindWith));
+            dependencies.add(new ProvidedMethodDependency(providedMethod, new ProvidesMethodInvoker(providedMethod), annotationToBindWith));
         }
         return dependencies;
     }
 
-    private static class ProvidesMethodInovker implements Provider<Object> {
+    private static class ProvidesMethodInvoker implements Provider<Object> {
 
         private final Method method;
 
-        public ProvidesMethodInovker(Method method) {
+        public ProvidesMethodInvoker(Method method) {
             this.method = method;
         }
 
