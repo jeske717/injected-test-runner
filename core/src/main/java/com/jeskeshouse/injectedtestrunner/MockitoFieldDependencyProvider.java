@@ -7,8 +7,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Provider;
 
@@ -24,9 +22,7 @@ class MockitoFieldDependencyProvider implements DependencyProvider {
     public List<Dependency> getDependencies(Object test) throws Exception {
         final List<Field> declaredFields = getDeclaredFields(test);
         List<Dependency> objects = new ArrayList<Dependency>();
-//        for (Field field : test.getClass().getDeclaredFields()) {
         for (Field field : declaredFields) {
-            Logger.getLogger("Lance").log(Level.SEVERE, "field=" + field);
             Mock mockAnnotation = field.getAnnotation(Mock.class);
             if (mockAnnotation != null) {
                 field.setAccessible(true);
