@@ -5,6 +5,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 
 import java.lang.reflect.Method;
@@ -30,10 +31,10 @@ public class DaggerInjectedTestRunner extends RobolectricTestRunner {
 
         @Override
         public void afterTest(Method method) {
-            Robolectric.reset(null);
-            if (Robolectric.application != null) {
-                Robolectric.runBackgroundTasks();
-                Robolectric.runUiThreadTasksIncludingDelayedTasks();
+            Robolectric.reset();
+            if (RuntimeEnvironment.application != null) {
+                Robolectric.flushBackgroundThreadScheduler();
+                Robolectric.flushForegroundThreadScheduler();
             }
             DaggerTestInitializer.resetModules();
             super.afterTest(method);

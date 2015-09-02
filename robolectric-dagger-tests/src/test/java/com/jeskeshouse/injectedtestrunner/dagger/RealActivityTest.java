@@ -3,14 +3,14 @@ package com.jeskeshouse.injectedtestrunner.dagger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
-import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertSame;
 
 @RunWith(DaggerInjectedTestRunner.class)
-@Config(manifest = Config.NONE)
 @MockModule(injects = RealActivity.class)
+@Config(constants = BuildConfig.class)
 public class RealActivityTest {
 
     @Mock
@@ -18,7 +18,7 @@ public class RealActivityTest {
 
     @Test
     public void mocksAreAutomaticallyInjected() throws Exception {
-        RealActivity activity = ActivityController.of(RealActivity.class).create().get();
+        RealActivity activity = Robolectric.setupActivity(RealActivity.class);
 
         InjectableThing injected = activity.injectableThing;
 
