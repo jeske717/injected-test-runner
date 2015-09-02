@@ -1,0 +1,15 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+    if (project.hasProperty("bintrayUserName")) {
+        user = bintrayUserName
+        key = bintrayApiKey
+    }
+    publish = true
+    publications = ['mavenJava']
+
+    pkg {
+        repo = 'android-utils'
+    }
+}

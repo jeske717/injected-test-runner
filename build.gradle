@@ -13,28 +13,12 @@ allprojects {
     apply plugin: 'maven'
 
     group 'com.jeskeshouse'
-    version "4.0.0-SNAPSHOT"
+    version "4.0.0"
 }
 
 subprojects {
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
-
     repositories {
         jcenter()
-    }
-
-    bintray {
-        if (project.hasProperty("bintrayUserName")) {
-            user = bintrayUserName
-            key = bintrayApiKey
-        }
-        publish = true
-        publications = ['mavenJava']
-
-        pkg {
-            repo = 'android-utils'
-        }
     }
 }
 

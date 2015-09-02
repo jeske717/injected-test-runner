@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply from: file("../shared-buildscripts/publishing.gradle")
 apply from: file("../shared-buildscripts/shared-java-build.gradle")
 
 dependencies {
