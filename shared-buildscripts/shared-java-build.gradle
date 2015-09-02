@@ -13,18 +13,20 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from 'build/docs/javadoc'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
+model {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
 
-            artifactId bintray.pkg.name
+                artifactId bintray.pkg.name
 
-            pom.withXml {
-                def root = asNode()
-                root.children().last() + pomConfig
+                pom.withXml {
+                    def root = asNode()
+                    root.children().last() + pomConfig
+                }
             }
         }
     }

@@ -7,7 +7,8 @@ import org.junit.runners.model.InitializationError;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.DefaultTestLifecycle;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 
 import java.lang.reflect.Method;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-public class InjectedTestRunner extends RobolectricTestRunner {
+public class InjectedTestRunner extends RobolectricGradleTestRunner {
 
     public InjectedTestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
@@ -48,26 +49,26 @@ public class InjectedTestRunner extends RobolectricTestRunner {
                     throw new RuntimeException("Failed to provide dependencies", e);
                 }
             } else {
-                RoboGuice.injectMembers(Robolectric.application, test);
+                RoboGuice.injectMembers(RuntimeEnvironment.application, test);
             }
         }
 
         @Override
         public void afterTest(Method method) {
-            Robolectric.reset(null);
-            if (Robolectric.application != null) {
-                Robolectric.runBackgroundTasks();
-                Robolectric.runUiThreadTasksIncludingDelayedTasks();
+            Robolectric.reset();
+            if (RuntimeEnvironment.application != null) {
+                Robolectric.flushBackgroundThreadScheduler();
+                Robolectric.flushForegroundThreadScheduler();
             }
             super.afterTest(method);
         }
 
         private void setupRoboguice(Object test, List<Dependency> objects) {
-            List<Module> modules = ModuleFactory.instantiateModulesForTest(test, Robolectric.application, objects);
-            RoboGuice.overrideApplicationInjector(Robolectric.application, Modules.override(RoboGuice.newDefaultRoboModule(Robolectric.application))
+            List<Module> modules = ModuleFactory.instantiateModulesForTest(test, RuntimeEnvironment.application, objects);
+            RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, Modules.override(RoboGuice.newDefaultRoboModule(RuntimeEnvironment.application))
                     .with(modules.toArray(new Module[modules.size()])));
 
-            RoboGuice.injectMembers(Robolectric.application, test);
+            RoboGuice.injectMembers(RuntimeEnvironment.application, test);
         }
     }
 }
